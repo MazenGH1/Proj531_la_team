@@ -4,10 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/style.css">
-    <title>Quizz de folie</title>
+    
+    <title>Quiz de folie</title>
 </head>
 <body>
-    <h1>Bienvenue chez Quiz & Co</h1>
-   
+    <div class="quiz-home">
+        <div class="Acceuil-zone">
+
+            <h1 class="Acceuil">
+                Bienvenue sur le quiz de folie !
+            </h1>
+            
+        </div>
+
+    <div class="start-zone">
+        {% for quiz in quizzes %}
+        <button class="start-quiz" id="{{quiz[0]}}">{{quiz[1]}}</button>
+        {% endfor %}
+    </div>
+
+    <script src="../static/script.js"></script>
 </body>
 </html>
