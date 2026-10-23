@@ -5,7 +5,10 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
+    #quiz_liste = db.get_all_quiz()
     return render_template("index.html")
+
+"""
 
 @app.route("/quiz")
 def quiz():
@@ -16,14 +19,11 @@ def result():
     return render_template("result.html")
 
 
-
 @app.route("/api/get_quiz/<int:id_quiz>", methods=["GET"])
 def quiz_api(id_quiz):
     quiz = db.get_quiz(id_quiz)
     return jsonify(format_questions(quiz))
 
-
-result = []
 
 def format_questions(questions):
     res = {}
@@ -36,4 +36,5 @@ def format_questions(questions):
 
 
 
-#app.run()
+app.run()
+"""
