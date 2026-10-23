@@ -3,31 +3,49 @@ import sqlite3
 def get_sql_connection() -> sqlite3.Connection:
     return sqlite3.connect("Quizco.db")
 
+def get_max_id(table : str)->int:
+    query = "SELECT MAX(id) FROM {table}".format(table=table)
+    res = 0
+    try:
+        with get_sql_connection() as connection_db:
+            cursor_db = connection_db.cursor()
+            cursor_db.execute(query)
+            res = cursor_db.fetchone()[0]
+            if res is None:
+                res = 0
+    except sqlite3.Error as error:
+        print(error)
+    finally:
+        connection_db.close()
+    return res
+
+
+
 def init_BDD():
     try:
         with get_sql_connection() as connection_db:
             cursor = connection_db.cursor()
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS Quiz (
-                    id_quiz INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER NOT NULL PRIMARY KEY,
                     titre TEXT NOT NULL
                 )
             ''')
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS Question (
-                    id_question INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER NOT NULL PRIMARY KEY,
                     question TEXT NOT NULL,
                     id_quiz INTEGER NOT NULL,
-                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id_quiz)
+                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id)
                 )
             ''')
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS Reponse (
-                    id_rep INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER NOT NULL PRIMARY KEY,
                     reponse TEXT NOT NULL,
                     correct BOOLEAN NOT NULL,
                     id_question INTEGER NOT NULL,
-                    FOREIGN KEY (id_question) REFERENCES Question (id_question)
+                    FOREIGN KEY (id_question) REFERENCES Question (id)
                 )
             ''')
             cursor.execute('''
@@ -39,11 +57,11 @@ def init_BDD():
             ''')
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS Resultat (
-                    id_res INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER NOT NULL PRIMARY KEY,
                     dateHeure TIMESTAMP NOT NULL,
                     username TEXT NOT NULL,
                     id_quiz INTEGER NOT NULL,
-                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id_quiz)
+                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id)
                     FOREIGN KEY (username) REFERENCES Utilisateur (username)
                 )
             ''')
@@ -51,9 +69,9 @@ def init_BDD():
                 CREATE TABLE IF NOT EXISTS aCommeReponse (
                     id_res INTEGER NOT NULL,
                     id_rep INTEGER NOT NULL,
-                    PRIMARY KEY (id_rep, id_rep)
-                    FOREIGN KEY (id_rep) REFERENCES Reponse (id_rep)
-                    FOREIGN KEY (id_res) REFERENCES Resultat (id_res)
+                    PRIMARY KEY (id_rep, id_res)
+                    FOREIGN KEY (id_rep) REFERENCES Reponse (id)
+                    FOREIGN KEY (id_res) REFERENCES Resultat (id)
                 )
             ''')
     except sqlite3.Error as error:
@@ -119,10 +137,13 @@ def get_qa_from(id_quiz:int)->list[tuple[int, str,list[tuple[int, str,bool]]]]:
 
 
 if __name__=="__main__":
+    init_BDD()
     print(get_all_quiz())
     print(get_qa_from(1))
+    print(get_max_id("Quiz"))
+    print(get_max_id("Resultat"))
 
-if __name__ == "__main__":
+if __name__ == "__main__" and False:
     connection_test = sqlite3.connect("Quizco.db")
     cursor_test = connection_test.cursor()
 
@@ -142,22 +163,22 @@ if __name__ == "__main__":
             ("Oui", True, 1),
             ("Non", False, 1)
      ''')
-    cursor_test.execute('''
-        INSERT INTO Utilisateur (username, passHash, isAdmin)
-        VALUES
-            ("Robert", "oUsItItI", True),
-            ("Alban", "244466666", False)
-        ''')
+#    cursor_test.execute('''
+#        INSERT INTO Utilisateur (username, passHash, isAdmin)
+#        VALUES
+#            ("Robert", "oUsItItI", True),
+#            ("Alban", "244466666", False)
+#        ''')
     cursor_test.execute('''
         INSERT INTO Resultat (dateHeure, username, id_quiz)
         VALUES
             (current_timestamp, "Alban", 1)
         ''')
-    cursor_test.execute('''
-        INSERT INTO aCommeReponse (id_res, id_rep)
-        VALUES 
-            (1, 1)
-    ''')
+#    cursor_test.execute('''
+#        INSERT INTO aCommeReponse (id_res, id_rep)
+#        VALUES
+#            (1, 1)
+#    ''')
 
     connection_test.commit()
     connection_test.close()
