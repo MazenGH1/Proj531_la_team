@@ -17,13 +17,14 @@ def result():
     return render_template("result.html")
 
 
-@app.route("/api/get_quiz", methods=["GET"])
-def quiz_api():
-    all_quizzes = db.get_all_quiz()
-    return jsonify(format_questions(all_quizzes))
+@app.route("/api/get_quiz/<int:id_quiz>", methods=["GET"])
+def quiz_api(id_quiz: int):
+    # Prend les question (et reponse) pour un tel quiz
+    questions = db.get_qa_from(id_quiz)
+    return jsonify(format_questions(questions))
 
 
-def format_questions(questions):
+def format_questions(questions: list[tuple[int,str,list[tuple[int,str,bool]]]]):
     res = {}
     for _ , question, reponses in questions:
         res[question] = {rep: correct for _, rep, correct in reponses}
@@ -32,5 +33,5 @@ def format_questions(questions):
 #test format_questions([(1,"comment tu t' appelle", [ (1,"edward", False), (2,"Robert", True), (3,"ezekielle", False) , (2,"sss", False) ])])
 
 
-
-app.run()
+if __name__ == "__main__":
+    app.run()
