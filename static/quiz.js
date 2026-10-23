@@ -4,7 +4,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 let quizData = undefined
 
-// For test purposes
+/*
 let quizExample = {
     "Quelle est la capitale de la Suisse ?": {
         "Bernes": true,
@@ -61,21 +61,13 @@ let quizExample = {
 
 quizData = quizExample
 
-//////////////////
+*/
 
 
 async function loadQuizData(quizId) {
 
-    const quizRequestMethod = {
-        method: "post",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: "id=" + quizId,
-    }
-
     try {
-        const response = await fetch(apiGateway, quizRequestMethod)
+        const response = await fetch(apiGateway + "/" + quizId)
 
         if (!response.ok) {
             throw new Error('Une erreur est survenue lors du chargement des ressources')
@@ -152,9 +144,26 @@ async function onAnswerClick(answer, correctness) {
     hasAnswered = false
 }
 
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+    return null
+}
+
 
 async function init() {
     // TODO : Connect with the API
+    const quizId = getQueryVariable("quiz_id")
+    if (quizId == null) {
+        window.location.href = "/"
+    }
+    await loadQuizData(quizId)
 }
 
 init().then(() => {loadQuestion(0)})
