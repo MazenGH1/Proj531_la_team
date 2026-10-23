@@ -19,4 +19,8 @@ def result():
     pass
     #return render_template("result.html")
 
+@app.route("/Api/get_quiz", methods=["GET"])
+def quiz_api():
+    pass
+
 app.run()
