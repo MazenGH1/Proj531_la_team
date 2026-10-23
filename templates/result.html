@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style.css">
+    <title>Tes Résultats</title>
+</head>
+<body>
+    <main class="container">
+
+        <header class="header">
+            <div>
+                <h1>Résultats du quiz</h1>
+                <p class="subtitle">Quiz de culture générale</p>
+            </div>
+            <span class="trophy">🏆</span>
+        </header>
+
+        <section class="score-card">
+            <p class="score-label">Ton score</p>
+
+            <h2><span id="score">8</span> <span>/ <span id="total">10</span></span></h2> 
+
+            <p class="percentage" id="percentage">80 % de réussite</p>
+
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <p class="message" id="message">Excellent travail ! 🎉</p>
+        </section>
+
+
+
+        <section class="stats">
+            <div class="stat-card">
+                <span class="icon success">✓</span>
+                <h3 id="bonnes-reponses">8</h3>
+                <p>Bonnes réponses</p>
+            </div>
+
+            <div class="stat-card">
+                <span class="icon error">✕</span>
+                <h3 id="mauvaises-reponses">2</h3>
+                <p>Mauvaises réponses</p>
+            </div>
+        </section>
+        
+        <script src="../static/script.js"></script>
+
+        <a href="quiz.html" class="restart">
+            ↻ Recommencer le quiz
+        </a>
+
+    </main>
+
+   
+</body>
+</html>
+
+

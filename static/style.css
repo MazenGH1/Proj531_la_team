@@ -241,3 +241,153 @@ body{
         0 10px 25px rgba(0,0,0,0.5);
 
 }
+
+
+
+
+/* Conteneur principal des résultats */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* En-tête */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #a9bbdc;
+    margin: 0;
+}
+
+.trophy {
+    font-size: 42px;
+}
+
+/* Carte du score */
+.score-card {
+    background: #0b2854;
+    padding: 30px;
+    border-radius: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #25446f;
+}
+
+.score-label {
+    color: #b9c9e8;
+    margin: 0;
+}
+
+.score-card h2 {
+    font-size: 54px;
+    margin: 12px 0;
+}
+
+.score-card h2 span {
+    font-size: 25px;
+    color: #a9bbdc;
+}
+
+.percentage {
+    color: #48e5c2;
+    font-weight: bold;
+}
+
+/* Barre de progression */
+.progress-bar {
+    height: 10px;
+    background: #25446f;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 25px 0 15px;
+}
+
+.progress {
+    width: 80%;
+    height: 100%;
+    background: #48e5c2;
+    border-radius: 20px;
+}
+
+.message {
+    color: #b9c9e8;
+}
+
+/* Statistiques */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: #0b2854;
+    border: 1px solid #25446f;
+    border-radius: 15px;
+    padding: 22px;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 30px;
+    margin: 12px 0 5px;
+}
+
+.stat-card p {
+    color: #b9c9e8;
+    margin-bottom: 0;
+}
+
+/* Icônes des statistiques */
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.success {
+    color: #48e5c2;
+    background: #153f52;
+}
+
+.error {
+    color: #ff7373;
+    background: #512c46;
+}
+
+/* Bouton pour recommencer */
+.restart {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    background: #48e5c2;
+    color: #00153a;
+    font-weight: bold;
+    padding: 16px;
+    border-radius: 10px;
+    margin-top: 30px;
+    transition: 0.2s;
+}
+
+.restart:hover {
+    background: #70f5d8;
+    transform: translateY(-2px);
+}
+
