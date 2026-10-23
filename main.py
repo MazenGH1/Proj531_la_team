@@ -5,7 +5,11 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
+<<<<<<< HEAD
     quiz_liste = db.get_all_quiz()
+=======
+    #quiz_liste= get_all_quiz()
+>>>>>>> origin/main
     return render_template("index.html", quizzes=quiz_liste)
 
 @app.route("/quiz")
