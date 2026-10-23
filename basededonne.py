@@ -1,52 +1,66 @@
 import sqlite3
 
-if __name__=="__main__":
-    connection_db = sqlite3.connect("Quizco.db")
-    cursor = connection_db.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Quiz (
-            id_quiz INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            titre TEXT NOT NULL
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Question (
-            id_question INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            question TEXT NOT NULL,
-            id_quiz INTEGER NOT NULL,
-            FOREIGN KEY (id_quiz) REFERENCES Quiz (id_quiz)
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Reponse (
-            id_rep INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            reponse TEXT NOT NULL,
-            correct BOOLEAN NOT NULL,
-            id_question INTEGER NOT NULL,
-            FOREIGN KEY (id_question) REFERENCES Question (id_question)
-        )
-    ''')
-    cursor.execute('''
-        INSERT INTO Quiz (titre)
-        VALUES
-            ("Quiz 1")
-     ''')
-    cursor.execute('''
-        INSERT INTO Question (question, id_quiz)
-        VALUES
-            ("Question 1", 1)
-     ''')
-    cursor.execute('''
-        INSERT INTO Reponse (reponse, correct, id_question)
-        VALUES
-            ("Oui", True, 1),
-            ("Non", False, 1)
-     ''')
-    connection_db.commit()
-    connection_db.close()
-
 def get_sql_connection() -> sqlite3.Connection:
     return sqlite3.connect("Quizco.db")
+
+def init_BDD():
+    try:
+        with get_sql_connection() as connection_db:
+            cursor = connection_db.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Quiz (
+                    id_quiz INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    titre TEXT NOT NULL
+                )
+            ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Question (
+                    id_question INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    question TEXT NOT NULL,
+                    id_quiz INTEGER NOT NULL,
+                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id_quiz)
+                )
+            ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Reponse (
+                    id_rep INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    reponse TEXT NOT NULL,
+                    correct BOOLEAN NOT NULL,
+                    id_question INTEGER NOT NULL,
+                    FOREIGN KEY (id_question) REFERENCES Question (id_question)
+                )
+            ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Utilisateur (
+                    username TEXT NOT NULL PRIMARY KEY,
+                    passHash TEXT NOT NULL,
+                    isAdmin BOOLEAN NOT NULL
+                )
+            ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Resultat (
+                    id_res INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    dateHeure TIMESTAMP NOT NULL,
+                    username TEXT NOT NULL,
+                    id_quiz INTEGER NOT NULL,
+                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id_quiz)
+                    FOREIGN KEY (username) REFERENCES Utilisateur (username)
+                )
+            ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS aCommeReponse (
+                    id_res INTEGER NOT NULL,
+                    id_rep INTEGER NOT NULL,
+                    PRIMARY KEY (id_rep, id_rep)
+                    FOREIGN KEY (id_rep) REFERENCES Reponse (id_rep)
+                    FOREIGN KEY (id_res) REFERENCES Resultat (id_res)
+                )
+            ''')
+    except sqlite3.Error as error:
+        print(error)
+    finally:
+        connection_db.commit()
+        connection_db.close()
 
 
 def get_all_quiz()->list[tuple[int, str]]:
@@ -89,8 +103,61 @@ def get_qa_from(id_quiz:int)->list[tuple[int, str,list[tuple[int, str,bool]]]]:
     return res
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__=="__main__":
     print(get_all_quiz())
     print(get_qa_from(1))
 
+if __name__ == "__main__":
+    connection_test = sqlite3.connect("Quizco.db")
+    cursor_test = connection_test.cursor()
 
+    cursor_test.execute('''
+        INSERT INTO Quiz (titre)
+        VALUES
+            ("Quiz 1")
+     ''')
+    cursor_test.execute('''
+        INSERT INTO Question (question, id_quiz)
+        VALUES
+            ("Question 1", 1)
+     ''')
+    cursor_test.execute('''
+        INSERT INTO Reponse (reponse, correct, id_question)
+        VALUES
+            ("Oui", True, 1),
+            ("Non", False, 1)
+     ''')
+    cursor_test.execute('''
+        INSERT INTO Utilisateur (username, passHash, isAdmin)
+        VALUES
+            ("Robert", "oUsItItI", True),
+            ("Alban", "244466666", False)
+        ''')
+    cursor_test.execute('''
+        INSERT INTO Resultat (dateHeure, username, id_quiz)
+        VALUES
+            (current_timestamp, "Alban", 1)
+        ''')
+    cursor_test.execute('''
+        INSERT INTO aCommeReponse (id_res, id_rep)
+        VALUES 
+            (1, 1)
+    ''')
+
+    connection_test.commit()
+    connection_test.close()
