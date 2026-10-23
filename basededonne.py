@@ -1,5 +1,16 @@
 import sqlite3
 
+
+TABLES_AUTORISE = {
+    "Quiz",
+    "Question",
+    "Reponse",
+    "Utilisateur",
+    "Resultat",
+    "aCommeReponse",
+}
+
+
 def get_sql_connection() -> sqlite3.Connection:
     return sqlite3.connect("Quizco.db")
 
@@ -20,6 +31,23 @@ def get_max_id(table : str)->int:
         print(error)
     finally:
         connection_db.close()
+    return res
+
+def get_max_id(table: str) -> int:
+    if table not in TABLES_AUTORISE:
+        raise ValueError(f"Invalid table name: {table}")
+
+    query = f"SELECT MAX(id) FROM {table}"
+    res = 0
+    try:
+        with get_sql_connection() as connection_db:
+            cursor_db = connection_db.cursor()
+            cursor_db.execute(query)
+            row = cursor_db.fetchone()
+            if row and row[0] is not None:
+                res = row[0]
+    except sqlite3.Error as error:
+        print(f"Error dans la BDD: {error}")
     return res
 
 
@@ -160,6 +188,39 @@ def create_quizz(quiz: list[tuple[str, list[tuple[str, bool]]]], titre: str) -> 
         print(error)
     finally:
         connection_cq.close()
+        
+        
+def create_user(username: str, pass_hash: str, is_admin: bool = False) -> bool:
+    query = """
+        INSERT INTO Utilisateur (username, passHash, isAdmin)
+        VALUES (?, ?, ?)
+    """
+    try:
+        with get_sql_connection() as conn:
+            cursor = conn.cursor()
+            # Les parametres sont en tuples
+            cursor.execute(query, (username, pass_hash, is_admin))
+            conn.commit()
+            return True
+    except sqlite3.IntegrityError:
+        # Username existe deja
+        return False
+    except sqlite3.Error as error:
+        print(f"Erreur dans BDD: {error}")
+        return False
+
+
+def get_user_by_username(username: str) -> tuple[str, str, bool] | None:
+    query = "SELECT username, passHash, isAdmin FROM Utilisateur WHERE username = ?"
+    try:
+        with get_sql_connection() as conn:
+            cursor = conn.cursor()
+            # SQLite treats the 'username' string strictly as data, not executable code
+            cursor.execute(query, (username,))
+            return cursor.fetchone()
+    except sqlite3.Error as error:
+        print(f"Erreur dans BDD: {error}")
+        return None
 
 
 
