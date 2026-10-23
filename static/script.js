@@ -4,7 +4,7 @@ boutons.forEach(bouton => {
 
     bouton.addEventListener("click", () => {
 
-        window.location.href = `/quiz/${bouton.id}`;
+        window.location.href = `/quiz?quiz_id=${bouton.id}`;
 
     });
 
