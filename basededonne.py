@@ -4,6 +4,9 @@ def get_sql_connection() -> sqlite3.Connection:
     return sqlite3.connect("Quizco.db")
 
 def get_max_id(table : str)->int:
+    """
+    returns the max id of table
+    """
     query = "SELECT MAX(id) FROM {table}".format(table=table)
     res = 0
     try:
@@ -21,7 +24,10 @@ def get_max_id(table : str)->int:
 
 
 
-def init_BDD():
+def init_BDD()->None:
+    """
+    Creates the BDD, does nothing if already exists
+    """
     try:
         with get_sql_connection() as connection_db:
             cursor = connection_db.cursor()
@@ -82,6 +88,9 @@ def init_BDD():
 
 
 def get_all_quiz()->list[tuple[int, str]]:
+    """
+    returns a list of all quizzes id and title
+    """
     res = []
     try:
         with get_sql_connection() as connection_gaq:
@@ -99,6 +108,9 @@ def get_all_quiz()->list[tuple[int, str]]:
     return res
 
 def get_qa_from(id_quiz:int)->list[tuple[int, str,list[tuple[int, str,bool]]]]:
+    """
+    returns list[tuple(id_question, question, list[tuple(id_reponse, reponse, correct)])]
+    """
     res = []
     try:
         with get_sql_connection() as connection_gqf:
@@ -121,16 +133,33 @@ def get_qa_from(id_quiz:int)->list[tuple[int, str,list[tuple[int, str,bool]]]]:
     return res
 
 
-
-
-
-
-
-
-
-
-
-
+def create_quizz(quiz: list[tuple[str, list[tuple[str, bool]]]], titre: str) -> None:
+    try:
+        with get_sql_connection() as connection_cq:
+            cursor = connection_cq.cursor()
+            cursor.execute('''
+                INSERT INTO Quiz (titre)
+                VALUES
+                    (titre)
+            ''')
+            id_quiz = get_max_id("Quiz")
+            for question in quiz:
+                cursor.execute('''
+                    INSERT INTO Question (question, id_quiz)
+                    VALUES 
+                        (question[0],id_quiz)
+                ''')
+                id_question = get_max_id("Question")
+                for reponse in question[1]:
+                    cursor.execute('''
+                    INSERT INTO Reponse (reponse, correct, id_question)
+                    VALUES 
+                        (reponse[0], reponse[1], id_question)
+                    ''')
+    except sqlite3.Error as error:
+        print(error)
+    finally:
+        connection_cq.close()
 
 
 
