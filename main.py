@@ -1,22 +1,40 @@
-from flask import Flask, render_template
-from basededonne import *
+from flask import Flask, render_template, jsonify
+import basededonne as db
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
+<<<<<<< HEAD
+    quiz_liste = db.get_all_quiz()
+=======
     #quiz_liste= get_all_quiz()
+>>>>>>> origin/main
     return render_template("index.html", quizzes=quiz_liste)
-
 
 @app.route("/quiz")
 def quiz():
-    pass
-    #return render_template("quiz.html")
+    return render_template("quiz.html")
 
 @app.route("/result")
 def result():
-    pass
-    #return render_template("result.html")
+    return render_template("result.html")
+
+
+@app.route("/api/get_quiz", methods=["GET"])
+def quiz_api():
+    all_quizzes = db.get_all_quiz()
+    return jsonify(format_questions(all_quizzes))
+
+
+def format_questions(questions):
+    res = {}
+    for _ , question, reponses in questions:
+        res[question] = {rep: correct for _, rep, correct in reponses}
+    return res
+
+#test format_questions([(1,"comment tu t' appelle", [ (1,"edward", False), (2,"Robert", True), (3,"ezekielle", False) , (2,"sss", False) ])])
+
+
 
 app.run()
