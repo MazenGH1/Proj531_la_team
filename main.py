@@ -1,39 +1,60 @@
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
-
 import basededonne as db
 
 
 app = Flask(__name__)
 
+
+db.init_BDD()
+existing_quizzes = db.get_all_quiz()
+if len(existing_quizzes) == 0:
+    print("Database empty! Inserting sample quiz...")
+    db.create_quizz(
+        [
+            ("Quelle est la capitale de la Suisse ?",
+             [("Berne", True), ("Genève", False), ("Bâle", False)]),
+            ("Combien font 7+7 ?",
+             [("13", False), ("14", True), ("15", False)]),
+        ],
+        "Quiz 1"
+    )
+    
+    
+    
 @app.route("/")
 def index():
     quiz_liste = db.get_all_quiz()
     return render_template("index.html", quizzes=quiz_liste)
 
+
 @app.route("/quiz")
 def quiz():
+    print("QUIZ PAGE")
     return render_template("quiz.html")
 
 @app.route("/result")
 def result():
     return render_template("result.html")
 
-
-@app.route("/api/get_quiz/<int:id_quiz>", methods=["GET"])
-def quiz_api(id_quiz: int):
-    # Prend les question (et reponse) pour un tel quiz
-    questions = db.get_qa_from(id_quiz)
-    return jsonify(format_questions(questions))
-
-
-def format_questions(questions: list[tuple[int,str,list[tuple[int,str,bool]]]]):
+def format_questions(questions):
     res = {}
-    for _ , question, reponses in questions:
-        res[question] = {rep: correct for _, rep, correct in reponses}
+    for id_question, question, reponses in questions:
+        res[question] = {rep: bool(correct) for _, rep, correct in reponses}
     return res
 
 #test format_questions([(1,"comment tu t' appelle", [ (1,"edward", False), (2,"Robert", True), (3,"ezekielle", False) , (2,"sss", False) ])])
+
+
+@app.route("/api/get_quiz/<int:id_quiz>")
+def quiz_api(id_quiz):
+    print("API REQUEST", id_quiz)
+    questions = db.get_qa_from(id_quiz)
+    print("AFTER DB")
+    return jsonify(format_questions(questions))
+
+
+    
 
 
 @app.route("/register", methods=["POST"])
@@ -79,5 +100,9 @@ def login():
     return redirect(url_for("index"))
 
 
+
+
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5555, debug=False)
+
+

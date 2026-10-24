@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 
@@ -10,9 +11,13 @@ TABLES_AUTORISE = {
     "aCommeReponse",
 }
 
+#NE PAS TOUCHER CA !!
+BDD_CHEMIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Quizco.db")
 
 def get_sql_connection() -> sqlite3.Connection:
-    return sqlite3.connect("Quizco.db")
+    return sqlite3.connect(BDD_CHEMIN)
+
+
 
 def get_max_id(table : str)->int:
     """
@@ -95,7 +100,7 @@ def init_BDD()->None:
                     dateHeure TIMESTAMP NOT NULL,
                     username TEXT NOT NULL,
                     id_quiz INTEGER NOT NULL,
-                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id)
+                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id),
                     FOREIGN KEY (username) REFERENCES Utilisateur (username)
                 )
             ''')
@@ -103,8 +108,8 @@ def init_BDD()->None:
                 CREATE TABLE IF NOT EXISTS aCommeReponse (
                     id_res INTEGER NOT NULL,
                     id_rep INTEGER NOT NULL,
-                    PRIMARY KEY (id_rep, id_res)
-                    FOREIGN KEY (id_rep) REFERENCES Reponse (id)
+                    PRIMARY KEY (id_rep, id_res),
+                    FOREIGN KEY (id_rep) REFERENCES Reponse (id),
                     FOREIGN KEY (id_res) REFERENCES Resultat (id)
                 )
             ''')
@@ -135,59 +140,79 @@ def get_all_quiz()->list[tuple[int, str]]:
         connection_gaq.close()
     return res
 
-def get_qa_from(id_quiz:int)->list[tuple[int, str,list[tuple[int, str,bool]]]]:
-    """
-    returns list[tuple(id_question, question, list[tuple(id_reponse, reponse, correct)])]
-    """
+
+def get_qa_from(id_quiz: int) -> list:
     res = []
+    connection = None
     try:
-        with get_sql_connection() as connection_gqf:
-            cursor_gqf = connection_gqf.cursor()
-            cursor_gqf.execute("SELECT * FROM Question WHERE id_quiz = ?", (id_quiz,))
-            questions = cursor_gqf.fetchall()
-            for row in questions:
-                id_question = row[0]
-                question = row[1]
-                rep = []
-                cursor_gqf.execute("SELECT * FROM Reponse WHERE id_question = ?", (id_question,))
-                responses = cursor_gqf.fetchall()
-                for row1 in responses:
-                    rep.append((row1[0], row1[1], row1[2]))
-                res.append((id_question, question, rep))
-    except sqlite3.Error as error:
-        print(error)
+        connection = get_sql_connection()
+        cursor = connection.cursor()
+
+        cursor.execute(
+            "SELECT id, question FROM Question WHERE id_quiz = ?",
+            (id_quiz,)
+        )
+        questions = cursor.fetchall()
+
+        for id_question, question in questions:
+            cursor.execute(
+                """
+                SELECT id, reponse, correct
+                FROM Reponse
+                WHERE id_question = ?
+                """,
+                (id_question,)
+            )
+            responses = cursor.fetchall()
+
+            reponses = [
+                (id_rep, texte_rep, bool(correct))
+                for id_rep, texte_rep, correct in responses
+            ]
+
+            res.append((id_question, question, reponses))
+
+        return res
+
+    except sqlite3.Error as e:
+        print(f"Database error in get_qa_from: {e}")
+        raise
     finally:
-        connection_gqf.close()
-    return res
+        # This guarantees the file unlocks
+        if connection:
+            connection.close()
 
 
 def create_quizz(quiz: list[tuple[str, list[tuple[str, bool]]]], titre: str) -> None:
+    conn = None
     try:
-        with get_sql_connection() as connection_cq:
-            cursor = connection_cq.cursor()
-            cursor.execute('''
-                INSERT INTO Quiz (titre)
-                VALUES
-                    (titre)
-            ''')
-            id_quiz = get_max_id("Quiz")
-            for question in quiz:
-                cursor.execute('''
-                    INSERT INTO Question (question, id_quiz)
-                    VALUES 
-                        (question[0],id_quiz)
-                ''')
-                id_question = get_max_id("Question")
-                for reponse in question[1]:
-                    cursor.execute('''
-                    INSERT INTO Reponse (reponse, correct, id_question)
-                    VALUES 
-                        (reponse[0], reponse[1], id_question)
-                    ''')
+        conn = get_sql_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO Quiz (titre) VALUES (?)", (titre,))
+        id_quiz = cursor.lastrowid
+
+        for texte_question, reponses in quiz:
+            cursor.execute(
+                "INSERT INTO Question (question, id_quiz) VALUES (?, ?)",
+                (texte_question, id_quiz),
+            )
+            id_question = cursor.lastrowid
+
+            cursor.executemany(
+                "INSERT INTO Reponse (reponse, correct, id_question) VALUES (?, ?, ?)",
+                [(texte_rep, correct, id_question) for texte_rep, correct in reponses],
+            )
+        
+        conn.commit() 
     except sqlite3.Error as error:
-        print(error)
+        print(f"Database error: {error}")
+        raise
     finally:
-        connection_cq.close()
+        # This guarantees the file unlocks
+        if conn:
+            conn.close()
+    
+    
         
         
 def create_user(username: str, pass_hash: str, is_admin: bool = False) -> bool:
@@ -221,54 +246,42 @@ def get_user_by_username(username: str) -> tuple[str, str, bool] | None:
     except sqlite3.Error as error:
         print(f"Erreur dans BDD: {error}")
         return None
-
+    
 
 
 
 
 if __name__=="__main__":
     init_BDD()
-    print(get_all_quiz())
-    print(get_qa_from(1))
-    print(get_max_id("Quiz"))
-    print(get_max_id("Resultat"))
+    existing_quizzes = get_all_quiz()
+    if len(existing_quizzes) == 0:
+        print("Database empty! Inserting sample quiz...")
+        create_quizz(
+            [
+                ("Quelle est la capitale de la Suisse ?",
+                 [("Berne", True), ("Genève", False), ("Bâle", False)]),
+                ("Combien font 7+7 ?",
+                 [("13", False), ("14", True), ("15", False)]),
+            ],
+            "Quiz 1"
+        )
+    else:
+        print("Quiz already exists in database.")
 
-if __name__ == "__main__" and False:
-    connection_test = sqlite3.connect("Quizco.db")
-    cursor_test = connection_test.cursor()
-
-    cursor_test.execute('''
-        INSERT INTO Quiz (titre)
-        VALUES
-            ("Quiz 1")
-     ''')
-    cursor_test.execute('''
-        INSERT INTO Question (question, id_quiz)
-        VALUES
-            ("Question 1", 1)
-     ''')
-    cursor_test.execute('''
-        INSERT INTO Reponse (reponse, correct, id_question)
-        VALUES
-            ("Oui", True, 1),
-            ("Non", False, 1)
-     ''')
+    print("Tous les quiz :", get_all_quiz())
+    print("Questions du quiz 1 :", get_qa_from(1))
+    
+    
 #    cursor_test.execute('''
 #        INSERT INTO Utilisateur (username, passHash, isAdmin)
 #        VALUES
 #            ("Robert", "oUsItItI", True),
 #            ("Alban", "244466666", False)
 #        ''')
-    cursor_test.execute('''
-        INSERT INTO Resultat (dateHeure, username, id_quiz)
-        VALUES
-            (current_timestamp, "Alban", 1)
-        ''')
-#    cursor_test.execute('''
+    
+    
+    #    cursor_test.execute('''
 #        INSERT INTO aCommeReponse (id_res, id_rep)
 #        VALUES
 #            (1, 1)
 #    ''')
-
-    connection_test.commit()
-    connection_test.close()

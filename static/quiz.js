@@ -64,25 +64,28 @@ quizData = quizExample
 */
 
 
-async function loadQuizData(quizId) {
 
+async function loadQuizData(quizId) {
     try {
-        const response = await fetch(apiGateway + "/" + quizId)
+        const response = await fetch(`${apiGateway}/${quizId}`);
+
+        // Read the response body so we can inspect Flask errors
+        const text = await response.text();
 
         if (!response.ok) {
-            throw new Error('Une erreur est survenue lors du chargement des ressources')
+            console.error("Flask returned an error:", response.status);
+            console.error("Server response:", text);
+            throw new Error(`HTTP ${response.status}: ${text}`);
         }
 
-        const blob = await response.blob()
-        const text = await blob.text()
-        quizData = JSON.parse(text)
-
+        quizData = JSON.parse(text);
     } catch (error) {
-        console.error(error)
-        alert('Une erreur est survenue lors du traitement des données, voir plus de détail en console')
+        console.error("Error in loadQuizData:", error);
+        alert("Erreur lors du chargement du quiz. Consulte la console.");
         return null;
     }
 }
+
 
 function loadQuestion(question) {
     const questionH1 = document.getElementById("question-txt")
@@ -144,27 +147,25 @@ async function onAnswerClick(answer, correctness) {
     hasAnswered = false
 }
 
+
 function getQueryVariable(variable) {
-    var query = window.location.search.substring(1);
-    var vars = query.split("&");
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split("=");
-        if (pair[0] == variable) {
-            return pair[1];
-        }
-    }
-    return null
+    const params = new URLSearchParams(window.location.search);
+    return params.get(variable); 
 }
+
 
 
 async function init() {
-    // TODO : Connect with the API
     const quizId = getQueryVariable("quiz_id")
-    if (quizId == null) {
+    if (quizId === null || quizId === "") {
         window.location.href = "/"
+        return false          
     }
     await loadQuizData(quizId)
+    return quizData !== undefined
 }
 
-init().then(() => {loadQuestion(0)})
+init().then(ok => {
+    if (ok) loadQuestion(0)
+})
 
