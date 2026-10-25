@@ -57,8 +57,11 @@ def quiz_api(id_quiz):
     
 
 
-@app.route("/register", methods=["POST"])
-def register():
+@app.route("/cree", methods=["GET", "POST"])
+def cree_compte():
+    if request.method == "GET":
+        return render_template("cree.html")
+    
     username = request.form.get("username", "").strip()
     password = request.form.get("password", "")
 
@@ -68,9 +71,8 @@ def register():
     if len(username) > 50:
         return "username trop long.", 400
 
-    hashed_password = generate_password_hash(password)
-
-    success = db.create_user(username, hashed_password)
+    mdp_hashed = generate_password_hash(password)
+    success = db.create_user(username, mdp_hashed)
     if not success:
         return "Username existe deja.", 409
 
@@ -78,8 +80,11 @@ def register():
 
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET","POST"])
 def login():
+    if request.method == "GET":
+        return render_template("login.html")
+    
     username = request.form.get("username", "").strip()
     password = request.form.get("password", "")
 
