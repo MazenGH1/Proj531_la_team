@@ -3,14 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style.css">
     <title>Login a votre compte</title>
 </head>
 <body>
-    <form action="/login" method="POST">
-    <input type="text" name="username" required>
-    <input type="password" name="password" required>
-    <button type="submit">Login</button>
-</form>
-    
+
+<div class="container">
+
+    <header class="header">
+        <div>
+            <h1>Bienvenue !</h1>
+            <p class="subtitle">Connecte-toi pour retrouver tes quiz.</p>
+        </div>
+        <div class="trophy">🏆</div>
+    </header>
+
+    <div class="auth-card">
+
+        <h2>Se connecter</h2>
+        <p class="form-subtitle">Ravi de te revoir !</p>
+
+        <form id="loginForm">
+
+            <label for="username">Nom d'utilisateur</label>
+            <input
+                type="text"
+                id="username"
+                placeholder="Ton pseudo"
+                minlength="3"
+                required
+            >
+
+            <label for="password">Mot de passe</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Ton mot de passe"
+                required
+            >
+
+            <button type="submit" class="submit-btn">
+                Se connecter
+            </button>
+
+        </form>
+
+        <p class="switch-text">
+            Pas encore de compte ?
+            <a href="inscription.html">Créer un compte</a>
+        </p>
+
+        <p id="message" class="message"></p>
+
+    </div>
+
+    <a href="index.html" class="back-link">← Retour à l'accueil</a>
+
+</div>
+
+<script src="js/connexion.js"></script>
+
+</body>
+</html>
+
 </body>
 </html>
