@@ -18,26 +18,6 @@ def get_sql_connection() -> sqlite3.Connection:
     return sqlite3.connect(BDD_CHEMIN)
 
 
-
-def get_max_id(table : str)->int:
-    """
-    returns the max id of table
-    """
-    query = "SELECT MAX(id) FROM {table}".format(table=table)
-    res = 0
-    try:
-        with get_sql_connection() as connection_db:
-            cursor_db = connection_db.cursor()
-            cursor_db.execute(query)
-            res = cursor_db.fetchone()[0]
-            if res is None:
-                res = 0
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        connection_db.close()
-    return res
-
 def get_max_id(table: str) -> int:
     if table not in TABLES_AUTORISE:
         raise ValueError(f"Invalid table name: {table}")
@@ -54,8 +34,6 @@ def get_max_id(table: str) -> int:
     except sqlite3.Error as error:
         print(f"Error dans la BDD: {error}")
     return res
-
-
 
 def init_BDD()->None:
     """

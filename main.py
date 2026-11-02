@@ -1,9 +1,10 @@
-from flask import Flask, jsonify, redirect, render_template, request, url_for
+from flask import Flask, jsonify, redirect, render_template, request, url_for, session
 from werkzeug.security import check_password_hash, generate_password_hash
 import basededonne as db
 
 
 app = Flask(__name__)
+app.secret_key = "change_this_to_a_random_secure_string_in_production"
 
 
 db.init_BDD()
@@ -37,22 +38,64 @@ def quiz():
 def result():
     return render_template("result.html")
 
-def format_questions(questions):
-    res = {}
-    for id_question, question, reponses in questions:
-        res[question] = {rep: bool(correct) for _, rep, correct in reponses}
-    return res
 
-#test format_questions([(1,"comment tu t' appelle", [ (1,"edward", False), (2,"Robert", True), (3,"ezekielle", False) , (2,"sss", False) ])])
+def format_questions(id_quiz: int, titre_quiz: str, questions: list) -> dict:
+    quiz_data = {
+        "id": id_quiz,
+        "title": titre_quiz,
+        "questions": []
+    }
 
+    for id_question, question_text, reponses in questions:
+        question_dict = {
+            "id": id_question,
+            "title": question_text,
+            "answers": []
+        }
+
+        for id_rep, texte_rep, correct in reponses:
+            question_dict["answers"].append({
+                "id": id_rep,
+                "title": texte_rep,
+                "correct": correct
+            })
+
+        quiz_data["questions"].append(question_dict)
+
+    return quiz_data
+
+
+"""
+tests
+
+avec 1 question 1 bonne rep format_quiz(1,"quizzz", [(1,"comment tu t' appelle ?", [ (1,"edward", False), (2,"Robert", True), (3,"ezekielle", False) , (2,"sss", False) ])])
+
+ avec 2 questions ft=format_questions(1,"quizzz", [
+    (1,"comment tu t' appelle", [ (1,"edward", False), (2,"Robert", True), (3,"ezekielle", False) , (4,"sssssss", False)]),
+    
+    (2,"1+1 ? ", [ (5,"5", False), (6,"2", True), (7,"977", False) , (8,"67", False)])
+    
+    ]
+            )
+            
+"""
 
 @app.route("/api/get_quiz/<int:id_quiz>")
 def quiz_api(id_quiz):
-    print("API REQUEST", id_quiz)
-    questions = db.get_qa_from(id_quiz)
-    print("AFTER DB")
-    return jsonify(format_questions(questions))
+    #prend tous les quiz et cherche leur titres
+    all_quizzes = db.get_all_quiz()
+    titre_quiz = next((titre for q_id, titre in all_quizzes if q_id == id_quiz), None)
 
+    # Si le quiz existe pas erreur
+    if titre_quiz is None:
+        return jsonify({"error": "Quiz introuvable"}), 404
+
+    # prend les quiestions
+    questions = db.get_qa_from(id_quiz)
+
+    # Format pour json pour le js
+    data = format_questions(id_quiz, titre_quiz, questions)
+    return jsonify(data)
 
     
 
@@ -80,7 +123,7 @@ def cree_compte():
 
 
 
-@app.route("/login", methods=["GET","POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
         return render_template("login.html")
@@ -91,16 +134,18 @@ def login():
     if not username or not password:
         return "Non !!!.", 401
 
-    # Fetch les information safely de la BDD
     user_record = db.get_user_by_username(username)
     if not user_record:
         return "invalide !!.", 401
 
-    _, stored_hash, is_admin = user_record
+    username_db, stored_hash, is_admin = user_record
 
-    # Verify password against hash
     if not check_password_hash(stored_hash, password):
         return "NON !!!!", 401
+
+   
+    session["username"] = username_db
+    session["is_admin"] = bool(is_admin)
 
     return redirect(url_for("index"))
 
