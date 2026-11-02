@@ -31,36 +31,37 @@
         <h2>Créer un compte</h2>
         <p class="form-subtitle">Inscris-toi pour sauvegarder tes scores !</p>
 
-        <form id="registerForm">
+        <form id="registerForm" action="/cree" method="POST">
 
-            <label for="username">Nom d'utilisateur</label>
-            <input
-                type="text"
-                id="username"
-                placeholder="Ton pseudo"
-                minlength="3"
-                required
-            >
+        <label for="username">Nom d'utilisateur</label>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Ton pseudo"
+            minlength="3"
+            required
+        >
 
+        <label for="password">Mot de passe</label>
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Au moins 8 caractères"
+            minlength="8"
+            required
+        >
 
-            <label for="password">Mot de passe</label>
-            <input
-                type="password"
-                id="password"
-                placeholder="Au moins 8 caractères"
-                minlength="8"
-                required
-            >
-
-            <button type="submit" class="submit-btn">
-                Créer mon compte
-            </button>
+        <button type="submit" class="submit-btn">
+            Créer mon compte
+        </button>
 
         </form>
 
         <p class="switch-text">
             Tu as déjà un compte ?
-            <a href="login.html">Se connecter</a>
+            <a href="login">Se connecter</a>
         </p>
 
         <p id="message" class="message"></p>

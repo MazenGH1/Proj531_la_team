@@ -23,12 +23,13 @@
         <h2>Se connecter</h2>
         <p class="form-subtitle">Ravi de te revoir !</p>
 
-        <form id="loginForm">
+        <form id="loginForm" action="/login" method="POST">
 
             <label for="username">Nom d'utilisateur</label>
             <input
                 type="text"
                 id="username"
+                name="username"
                 placeholder="Ton pseudo"
                 minlength="3"
                 required
@@ -38,6 +39,7 @@
             <input
                 type="password"
                 id="password"
+                name="password"
                 placeholder="Ton mot de passe"
                 required
             >

@@ -109,16 +109,26 @@ def cree_compte():
     password = request.form.get("password", "")
 
     if not username or not password:
-        return "Username et mot de passe ne peuvent pas etre vide !!!!!", 400
+        return "Username et mot de passe ne peuvent pas être vides !", 400
 
     if len(username) > 50:
-        return "username trop long.", 400
+        return "Username trop long.", 400
 
     mdp_hashed = generate_password_hash(password)
     success = db.create_user(username, mdp_hashed)
     if not success:
-        return "Username existe deja.", 409
+        return "Ce nom d'utilisateur existe déjà.", 409
 
+    # log in direct aores creation de compte 
+    session["username"] = username
+    session["is_admin"] = False
+
+    return redirect(url_for("index"))
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
     return redirect(url_for("index"))
 
 

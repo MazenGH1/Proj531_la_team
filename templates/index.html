@@ -1,27 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/style.css">
-    
     <title>Quiz de folie</title>
 </head>
 <body>
     <div class="quiz-home">
-        <div class="Acceuil-zone">
+        
+        <!-- User Status Bar -->
+        <div class="user-bar" style="text-align: right; padding: 10px 20px;">
+            {% if session.get('username') %}
+                <span>Connecté en tant que <strong>{{ session['username'] }}</strong></span>
+                {% if session.get('is_admin') %}
+                    <span>(Admin)</span>
+                {% endif %}
+                | <a href="/logout">Déconnexion</a>
+            {% else %}
+                <a href="/login">Se connecter</a> | 
+                <a href="/cree">Créer un compte</a>
+            {% endif %}
+        </div>
 
+        <div class="Acceuil-zone">
             <h1 class="Acceuil">
                 Bienvenue sur le quiz de folie !
             </h1>
-            
         </div>
 
-    <div class="start-zone">
-        {% for quiz in quizzes %}
-        <button class="start-quiz" id="{{quiz[0]}}">{{quiz[1]}}</button>
-        {% endfor %}
-    </div>
+        <div class="start-zone">
+            {% for quiz in quizzes %}
+            <button class="start-quiz" id="{{ quiz[0] }}">{{ quiz[1] }}</button>
+            {% endfor %}
+        </div>
     </div>
 
     <script src="../static/script.js"></script>
