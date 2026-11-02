@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/style.css">
+    <script src="../static/result.js"></script>
     <title>Tes Résultats</title>
 </head>
 <body>
@@ -12,7 +13,7 @@
         <header class="header">
             <div>
                 <h1>Résultats du quiz</h1>
-                <p class="subtitle">Quiz de culture générale</p>
+                <p class="subtitle">{{ title }}</p>
             </div>
             <span class="trophy">🏆</span>
         </header>
@@ -20,9 +21,9 @@
         <section class="score-card">
             <p class="score-label">Ton score</p>
 
-            <h2><span id="score">8</span> <span>/ <span id="total">10</span></span></h2> 
+            <h2><span id="score">{{ correct }}</span> <span> / <span id="total">{{ total }}</span></span></h2>
 
-            <p class="percentage" id="percentage">80 % de réussite</p>
+            <p class="percentage" id="percentage">{{ correct/total * 100 }} % de réussite</p>
 
             <div class="progress-bar">
                 <div class="progress" id="progress"></div>
@@ -47,15 +48,16 @@
             </div>
         </section>
         
-        <script src="../static/script.js"></script>
 
-        <a href="quiz.html" class="restart">
-            ↻ Recommencer le quiz
+
+        <a href="/" class="restart">
+            🏠🏠😱🏠🏠
         </a>
 
     </main>
 
-   
+
+<script defer>init({{ correct }}, {{ total }})</script>
 </body>
 </html>
 

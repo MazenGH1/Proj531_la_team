@@ -1,10 +1,12 @@
+import json
+
 from flask import Flask, jsonify, redirect, render_template, request, url_for, session
 from werkzeug.security import check_password_hash, generate_password_hash
 import basededonne as db
 
 
 app = Flask(__name__)
-app.secret_key = "change_this_to_a_random_secure_string_in_production"
+app.secret_key = "xJ7$P9vLm2!Qk8#Rz5@Tn1&Ws4*Hb6YfC3dE9uNp0"
 
 
 db.init_BDD()
@@ -20,9 +22,9 @@ if len(existing_quizzes) == 0:
         ],
         "Quiz 1"
     )
-    
-    
-    
+
+
+
 @app.route("/")
 def index():
     quiz_liste = db.get_all_quiz()
@@ -34,9 +36,31 @@ def quiz():
     print("QUIZ PAGE")
     return render_template("quiz.html")
 
+def compute_score(quiz_id : int, answers : list[int]) -> tuple[int, int] :
+    q_and_a = db.get_qa_from(quiz_id)
+    total = len(q_and_a)
+
+    correct = 0
+
+    for question in q_and_a:
+        for answer in question[2]:
+            if answer[2] and answer[0] in answers:
+                correct += 1
+                break
+
+    return correct, total
+
 @app.route("/result")
 def result():
-    return render_template("result.html")
+    quiz_id = eval(request.args.get("quiz_id"))
+    quiz_result = eval(request.args["quiz_result"])
+
+    all_quizzes = db.get_all_quiz()
+    titre_quiz = next((titre for q_id, titre in all_quizzes if q_id == quiz_id), None)
+
+    correct, total = compute_score(quiz_id, quiz_result)
+    print(correct, total)
+    return render_template("result.html", correct=correct, total=total, title=titre_quiz)
 
 
 def format_questions(id_quiz: int, titre_quiz: str, questions: list) -> dict:
@@ -97,14 +121,14 @@ def quiz_api(id_quiz):
     data = format_questions(id_quiz, titre_quiz, questions)
     return jsonify(data)
 
-    
+
 
 
 @app.route("/cree", methods=["GET", "POST"])
 def cree_compte():
     if request.method == "GET":
         return render_template("cree.html")
-    
+
     username = request.form.get("username", "").strip()
     password = request.form.get("password", "")
 
@@ -119,7 +143,7 @@ def cree_compte():
     if not success:
         return "Ce nom d'utilisateur existe déjà.", 409
 
-    # log in direct aores creation de compte 
+    # log in direct aores creation de compte
     session["username"] = username
     session["is_admin"] = False
 
@@ -137,7 +161,7 @@ def logout():
 def login():
     if request.method == "GET":
         return render_template("login.html")
-    
+
     username = request.form.get("username", "").strip()
     password = request.form.get("password", "")
 
@@ -153,7 +177,7 @@ def login():
     if not check_password_hash(stored_hash, password):
         return "NON !!!!", 401
 
-   
+
     session["username"] = username_db
     session["is_admin"] = bool(is_admin)
 

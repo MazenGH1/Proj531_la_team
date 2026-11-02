@@ -6,35 +6,6 @@ let quizData = undefined
 
 let quizResult = []
 
-/*
-let quizExample = {
-    "title": "C'est le quiz qui test la connaissance",
-    "id": 45,
-    "questions": [
-        {
-            "title": "Quelle est le nom de la fonction associant un nombre à 2",
-            "id": 1,
-            "answers": [
-                {
-                    "title": "Fonction affine",
-                    "id": 1,
-                    "correct": false
-                },
-                {
-                    "title": "Fonction 1 + 1",
-                    "id": 2,
-                    "correct": true
-                }
-            ]
-        }
-    ]
-}
-
-quizData = quizExample
-*/
-
-
-
 
 async function loadQuizData(quizId) {
     try {
@@ -93,7 +64,8 @@ function finishQuiz() {
     const questionH1 = document.getElementById("question-txt")
     const answersZone = document.getElementById("answers-zone")
     answersZone.innerHTML = "" // Empty the content of the div
-    questionH1.innerText = "C'est la fin la team"
+    //questionH1.innerText = "C'est la fin la team"
+    window.location = "/result?quiz_id=" + quizData.id + "&quiz_result=" + JSON.stringify(quizResult)
 }
 
 
@@ -109,7 +81,7 @@ async function onAnswerClick(answer, correctness) {
 
     answer.style.background = correctness ? greenBack : redBack
 
-    quizResult.push(answer.id)
+    quizResult.push(parseInt(answer.id))
 
     // TODO : Save answers for the result
 
