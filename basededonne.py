@@ -347,7 +347,7 @@ def get_user_by_username(username: str) -> tuple[str, str, bool] | None:
 def create_resultat(id_quiz: int, username: str) -> bool:
     query = """
             INSERT INTO Resultat (id_quiz, username, dateHeure)
-            VALUES (?, ?, CURRENT_TIMESTAMP) \           
+            VALUES (?, ?, CURRENT_TIMESTAMP)          
             """
     try:
         with get_sql_connection() as conn:
@@ -362,15 +362,15 @@ def create_resultat(id_quiz: int, username: str) -> bool:
         if conn:
             conn.close()
 
-def create_aCommeReponse(id_response: int, id_resultat: int) -> bool:
+def create_aCommeReponse(id_reponse: int, id_resultat: int) -> bool:
     query = """
-            INSERT INTO aCommeReponse (id_res, id_rep)
+            INSERT INTO aCommeReponse (id_rep, id_res)
             VALUES (?, ?) \
             """
     try:
         with get_sql_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (id_response,id_resultat))
+            cursor.execute(query, (id_reponse,id_resultat))
             conn.commit()
             return True
     except sqlite3.IntegrityError:
@@ -382,6 +382,28 @@ def create_aCommeReponse(id_response: int, id_resultat: int) -> bool:
     finally:
         if conn:
             conn.close()
+
+def get_all_reponse_from_resultat(id_resultat: int) -> list[tuple[int,str, bool, int]] | None:
+    """
+    :return: list[tuple[id_reponse, reponse, correct, id_question]]
+    """
+    query = """
+            SELECT id, reponse, correct, id_question FROM Reponse
+            JOIN aCommeReponse ON Reponse.id = aCommeReponse.id_rep
+            WHERE aCommeReponse.id_res = ?
+            """
+    try:
+        with get_sql_connection() as conn:
+            res = []
+            cursor = conn.cursor()
+            cursor.execute(query, (id_resultat,))
+            for line in cursor.fetchall():
+                res.append((line[0],line[1],line[2],line[3]))
+            return res
+    except sqlite3.Error as error:
+        print(f"Erreur dans BDD: {error}")
+        return None
+
 
 
 
@@ -405,16 +427,10 @@ if __name__ == "__main__":
     print("Tous les quiz :", get_all_quiz())
     print("Questions du quiz 1 :", get_qa_from(1))
 
-#    cursor_test.execute('''
-#        INSERT INTO Utilisateur (username, passHash, isAdmin)
-#        VALUES
-#            ("Robert", "oUsItItI", True),
-#            ("Alban", "244466666", False)
-#        ''')
+    print(get_all_reponse_from_resultat(1))
+    # create_user("Robert", "oUsItItI", True)
+    # create_user("Alban", "244466666", False)
+    #
+    # create_resultat(1, "Alban")
+    # create_aCommeReponse(1, 1)
 
-
-#    cursor_test.execute('''
-#        INSERT INTO aCommeReponse (id_res, id_rep)
-#        VALUES
-#            (1, 1)
-#    ''')
