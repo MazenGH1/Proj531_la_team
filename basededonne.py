@@ -426,11 +426,11 @@ if __name__ == "__main__":
 
     print("Tous les quiz :", get_all_quiz())
     print("Questions du quiz 1 :", get_qa_from(1))
-
-    print(get_all_reponse_from_resultat(1))
+    print("Resultats :", get_all_reponse_from_resultat(1))
+    # print(get_all_reponse_from_resultat(1))
     # create_user("Robert", "oUsItItI", True)
     # create_user("Alban", "244466666", False)
     #
     # create_resultat(1, "Alban")
     # create_aCommeReponse(1, 1)
-
+    # create_aCommeReponse(5, 1)
