@@ -5,13 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creation de compte</title>
 </head>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un compte</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
 <body>
 
-    <form action="/cree" method="POST">
-    <input type="text" name="username" required>
-    <input type="password" name="password" required>
-    <button type="submit">Crée votre compte</button>
-</form>
-    
+<div class="container">
+
+    <header class="header">
+        <div>
+            <h1>Rejoins-nous !</h1>
+            <p class="subtitle">Crée ton compte et commence à jouer.</p>
+        </div>
+        <div class="trophy">🏆</div>
+    </header>
+
+    <div class="auth-card">
+
+        <h2>Créer un compte</h2>
+        <p class="form-subtitle">Inscris-toi pour sauvegarder tes scores !</p>
+
+        <form id="registerForm">
+
+            <label for="username">Nom d'utilisateur</label>
+            <input
+                type="text"
+                id="username"
+                placeholder="Ton pseudo"
+                minlength="3"
+                required
+            >
+
+
+            <label for="password">Mot de passe</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Au moins 8 caractères"
+                minlength="8"
+                required
+            >
+
+            <button type="submit" class="submit-btn">
+                Créer mon compte
+            </button>
+
+        </form>
+
+        <p class="switch-text">
+            Tu as déjà un compte ?
+            <a href="connexion.html">Se connecter</a>
+        </p>
+
+        <p id="message" class="message"></p>
+
+    </div>
+
+    <a href="index.html" class="back-link">← Retour à l'accueil</a>
+
+</div>
+
+<script src="js/inscription.js"></script>
+
+</body>
+</html>
+
 </body>
 </html>

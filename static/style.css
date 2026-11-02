@@ -391,3 +391,182 @@ body{
     transform: translateY(-2px);
 }
 
+
+
+
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: linear-gradient(
+        135deg,
+        #00153a,
+        #003e91,
+        #00153a
+    );
+
+    color: white;
+}
+
+/* Conteneur principal */
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* En-tête */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #a9bbdc;
+}
+
+.trophy {
+    font-size: 42px;
+}
+
+/* Carte */
+
+.auth-card {
+    background: #0b2854;
+    padding: 30px;
+    border-radius: 18px;
+    border: 1px solid #25446f;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.auth-card h2 {
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+.form-subtitle {
+    color: #a9bbdc;
+    margin-bottom: 25px;
+}
+
+/* Formulaire */
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    margin-top: 18px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid #25446f;
+    background: #061d40;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #48e5c2;
+    box-shadow: 0 0 8px rgba(72,229,194,0.3);
+}
+
+input::placeholder {
+    color: #8298bb;
+}
+
+/* Bouton */
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    margin-top: 30px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #48e5c2;
+    color: #00153a;
+
+    font-size: 17px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.submit-btn:hover {
+    background: #70f5d8;
+    transform: translateY(-2px);
+}
+
+/* Liens */
+
+.switch-text {
+    text-align: center;
+    color: #b9c9e8;
+    margin-top: 25px;
+}
+
+.switch-text a {
+    color: #48e5c2;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.switch-text a:hover {
+    text-decoration: underline;
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    color: #a9bbdc;
+    text-decoration: none;
+    margin-top: 25px;
+}
+
+.back-link:hover {
+    color: #48e5c2;
+}
+
+/* Messages */
+
+.message {
+    text-align: center;
+    margin-top: 20px;
+    color: #48e5c2;
+}
+
+/* Mobile */
+
+@media (max-width: 500px) {
+    .container {
+        padding: 25px 15px;
+    }
+
+    .auth-card {
+        padding: 20px;
+    }
+}
