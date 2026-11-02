@@ -1,7 +1,6 @@
 import os
 import sqlite3
 
-
 TABLES_AUTORISE = {
     "Quiz",
     "Question",
@@ -11,32 +10,13 @@ TABLES_AUTORISE = {
     "aCommeReponse",
 }
 
-#NE PAS TOUCHER CA !!
+# NE PAS TOUCHER CA !!
 BDD_CHEMIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Quizco.db")
+
 
 def get_sql_connection() -> sqlite3.Connection:
     return sqlite3.connect(BDD_CHEMIN)
 
-
-
-def get_max_id(table : str)->int:
-    """
-    returns the max id of table
-    """
-    query = "SELECT MAX(id) FROM {table}".format(table=table)
-    res = 0
-    try:
-        with get_sql_connection() as connection_db:
-            cursor_db = connection_db.cursor()
-            cursor_db.execute(query)
-            res = cursor_db.fetchone()[0]
-            if res is None:
-                res = 0
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        connection_db.close()
-    return res
 
 def get_max_id(table: str) -> int:
     if table not in TABLES_AUTORISE:
@@ -56,8 +36,7 @@ def get_max_id(table: str) -> int:
     return res
 
 
-
-def init_BDD()->None:
+def init_BDD() -> None:
     """
     Creates the BDD, does nothing if already exists
     """
@@ -65,54 +44,168 @@ def init_BDD()->None:
         with get_sql_connection() as connection_db:
             cursor = connection_db.cursor()
             cursor.execute('''
-                CREATE TABLE IF NOT EXISTS Quiz (
-                    id INTEGER NOT NULL PRIMARY KEY,
-                    titre TEXT NOT NULL
-                )
-            ''')
+                           CREATE TABLE IF NOT EXISTS Quiz
+                           (
+                               id
+                               INTEGER
+                               NOT
+                               NULL
+                               PRIMARY
+                               KEY,
+                               titre
+                               TEXT
+                               NOT
+                               NULL
+                           )
+                           ''')
             cursor.execute('''
-                CREATE TABLE IF NOT EXISTS Question (
-                    id INTEGER NOT NULL PRIMARY KEY,
-                    question TEXT NOT NULL,
-                    id_quiz INTEGER NOT NULL,
-                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id)
-                )
-            ''')
+                           CREATE TABLE IF NOT EXISTS Question
+                           (
+                               id
+                               INTEGER
+                               NOT
+                               NULL
+                               PRIMARY
+                               KEY,
+                               question
+                               TEXT
+                               NOT
+                               NULL,
+                               id_quiz
+                               INTEGER
+                               NOT
+                               NULL,
+                               FOREIGN
+                               KEY
+                           (
+                               id_quiz
+                           ) REFERENCES Quiz
+                           (
+                               id
+                           )
+                               )
+                           ''')
             cursor.execute('''
-                CREATE TABLE IF NOT EXISTS Reponse (
-                    id INTEGER NOT NULL PRIMARY KEY,
-                    reponse TEXT NOT NULL,
-                    correct BOOLEAN NOT NULL,
-                    id_question INTEGER NOT NULL,
-                    FOREIGN KEY (id_question) REFERENCES Question (id)
-                )
-            ''')
+                           CREATE TABLE IF NOT EXISTS Reponse
+                           (
+                               id
+                               INTEGER
+                               NOT
+                               NULL
+                               PRIMARY
+                               KEY,
+                               reponse
+                               TEXT
+                               NOT
+                               NULL,
+                               correct
+                               BOOLEAN
+                               NOT
+                               NULL,
+                               id_question
+                               INTEGER
+                               NOT
+                               NULL,
+                               FOREIGN
+                               KEY
+                           (
+                               id_question
+                           ) REFERENCES Question
+                           (
+                               id
+                           )
+                               )
+                           ''')
             cursor.execute('''
-                CREATE TABLE IF NOT EXISTS Utilisateur (
-                    username TEXT NOT NULL PRIMARY KEY,
-                    passHash TEXT NOT NULL,
-                    isAdmin BOOLEAN NOT NULL
-                )
-            ''')
+                           CREATE TABLE IF NOT EXISTS Utilisateur
+                           (
+                               username
+                               TEXT
+                               NOT
+                               NULL
+                               PRIMARY
+                               KEY,
+                               passHash
+                               TEXT
+                               NOT
+                               NULL,
+                               isAdmin
+                               BOOLEAN
+                               NOT
+                               NULL
+                           )
+                           ''')
             cursor.execute('''
-                CREATE TABLE IF NOT EXISTS Resultat (
-                    id INTEGER NOT NULL PRIMARY KEY,
-                    dateHeure TIMESTAMP NOT NULL,
-                    username TEXT NOT NULL,
-                    id_quiz INTEGER NOT NULL,
-                    FOREIGN KEY (id_quiz) REFERENCES Quiz (id),
-                    FOREIGN KEY (username) REFERENCES Utilisateur (username)
-                )
-            ''')
+                           CREATE TABLE IF NOT EXISTS Resultat
+                           (
+                               id
+                               INTEGER
+                               NOT
+                               NULL
+                               PRIMARY
+                               KEY,
+                               dateHeure
+                               TIMESTAMP
+                               NOT
+                               NULL,
+                               username
+                               TEXT
+                               NOT
+                               NULL,
+                               id_quiz
+                               INTEGER
+                               NOT
+                               NULL,
+                               FOREIGN
+                               KEY
+                           (
+                               id_quiz
+                           ) REFERENCES Quiz
+                           (
+                               id
+                           ),
+                               FOREIGN KEY
+                           (
+                               username
+                           ) REFERENCES Utilisateur
+                           (
+                               username
+                           )
+                               )
+                           ''')
             cursor.execute('''
-                CREATE TABLE IF NOT EXISTS aCommeReponse (
-                    id_res INTEGER NOT NULL,
-                    id_rep INTEGER NOT NULL,
-                    PRIMARY KEY (id_rep, id_res),
-                    FOREIGN KEY (id_rep) REFERENCES Reponse (id),
-                    FOREIGN KEY (id_res) REFERENCES Resultat (id)
-                )
-            ''')
+                           CREATE TABLE IF NOT EXISTS aCommeReponse
+                           (
+                               id_res
+                               INTEGER
+                               NOT
+                               NULL,
+                               id_rep
+                               INTEGER
+                               NOT
+                               NULL,
+                               PRIMARY
+                               KEY
+                           (
+                               id_rep,
+                               id_res
+                           ),
+                               FOREIGN KEY
+                           (
+                               id_rep
+                           ) REFERENCES Reponse
+                           (
+                               id
+                           ),
+                               FOREIGN KEY
+                           (
+                               id_res
+                           ) REFERENCES Resultat
+                           (
+                               id
+                           )
+                               )
+                           ''')
     except sqlite3.Error as error:
         print(error)
     finally:
@@ -120,7 +213,7 @@ def init_BDD()->None:
         connection_db.close()
 
 
-def get_all_quiz()->list[tuple[int, str]]:
+def get_all_quiz() -> list[tuple[int, str]]:
     """
     returns a list of all quizzes id and title
     """
@@ -202,8 +295,8 @@ def create_quizz(quiz: list[tuple[str, list[tuple[str, bool]]]], titre: str) -> 
                 "INSERT INTO Reponse (reponse, correct, id_question) VALUES (?, ?, ?)",
                 [(texte_rep, correct, id_question) for texte_rep, correct in reponses],
             )
-        
-        conn.commit() 
+
+        conn.commit()
     except sqlite3.Error as error:
         print(f"Database error: {error}")
         raise
@@ -211,15 +304,13 @@ def create_quizz(quiz: list[tuple[str, list[tuple[str, bool]]]], titre: str) -> 
         # This guarantees the file unlocks
         if conn:
             conn.close()
-    
-    
-        
-        
+
+
 def create_user(username: str, pass_hash: str, is_admin: bool = False) -> bool:
     query = """
-        INSERT INTO Utilisateur (username, passHash, isAdmin)
-        VALUES (?, ?, ?)
-    """
+            INSERT INTO Utilisateur (username, passHash, isAdmin)
+            VALUES (?, ?, ?) \
+            """
     try:
         with get_sql_connection() as conn:
             cursor = conn.cursor()
@@ -233,6 +324,9 @@ def create_user(username: str, pass_hash: str, is_admin: bool = False) -> bool:
     except sqlite3.Error as error:
         print(f"Erreur dans BDD: {error}")
         return False
+    finally:
+        if conn:
+            conn.close()
 
 
 def get_user_by_username(username: str) -> tuple[str, str, bool] | None:
@@ -246,12 +340,52 @@ def get_user_by_username(username: str) -> tuple[str, str, bool] | None:
     except sqlite3.Error as error:
         print(f"Erreur dans BDD: {error}")
         return None
-    
+    finally:
+        if conn:
+            conn.close()
+
+def create_resultat(id_quiz: int, username: str) -> bool:
+    query = """
+            INSERT INTO Resultat (id_quiz, username, dateHeure)
+            VALUES (?, ?, CURRENT_TIMESTAMP) \           
+            """
+    try:
+        with get_sql_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (id_quiz, username))
+            conn.commit()
+            return True
+    except sqlite3.Error as error:
+        print(f"Erreur dans BDD: {error}")
+        return False
+    finally:
+        if conn:
+            conn.close()
+
+def create_aCommeReponse(id_response: int, id_resultat: int) -> bool:
+    query = """
+            INSERT INTO aCommeReponse (id_res, id_rep)
+            VALUES (?, ?) \
+            """
+    try:
+        with get_sql_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (id_response,id_resultat))
+            conn.commit()
+            return True
+    except sqlite3.IntegrityError:
+        print("question deja repondu dans cette session")
+        return False
+    except sqlite3.Error as error:
+        print(f"Erreur dans BDD: {error}")
+        return False
+    finally:
+        if conn:
+            conn.close()
 
 
 
-
-if __name__=="__main__":
+if __name__ == "__main__":
     init_BDD()
     existing_quizzes = get_all_quiz()
     if len(existing_quizzes) == 0:
@@ -270,17 +404,16 @@ if __name__=="__main__":
 
     print("Tous les quiz :", get_all_quiz())
     print("Questions du quiz 1 :", get_qa_from(1))
-    
-    
+
 #    cursor_test.execute('''
 #        INSERT INTO Utilisateur (username, passHash, isAdmin)
 #        VALUES
 #            ("Robert", "oUsItItI", True),
 #            ("Alban", "244466666", False)
 #        ''')
-    
-    
-    #    cursor_test.execute('''
+
+
+#    cursor_test.execute('''
 #        INSERT INTO aCommeReponse (id_res, id_rep)
 #        VALUES
 #            (1, 1)
