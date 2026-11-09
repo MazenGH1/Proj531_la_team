@@ -28,26 +28,25 @@ if len(existing_quizzes) == 0:
 @app.route("/")
 def index():
     quiz_liste = db.get_all_quiz()
+    # La page principale
     return render_template("index.html", quizzes=quiz_liste)
 
 
 @app.route("/quiz")
 def quiz():
     print("QUIZ PAGE")
+    #La page ou le quiz se passerai
     return render_template("quiz.html")
 
-def compute_score(quiz_id : int, answers : list[int]) -> tuple[int, int] :
+def compute_score(quiz_id : int, answers : list[int]) -> tuple[int, int]:
     q_and_a = db.get_qa_from(quiz_id)
     total = len(q_and_a)
-
     correct = 0
-
     for question in q_and_a:
         for answer in question[2]:
             if answer[2] and answer[0] in answers:
                 correct += 1
                 break
-
     return correct, total
 
 @app.route("/result")
@@ -64,6 +63,9 @@ def result():
 
 
 def format_questions(id_quiz: int, titre_quiz: str, questions: list) -> dict:
+    """
+Fonction qui fera le format qui quiz pour l envoyer au js
+"""
     quiz_data = {
         "id": id_quiz,
         "title": titre_quiz,
@@ -145,7 +147,7 @@ def cree_compte():
 
     # log in direct aores creation de compte
     session["username"] = username
-    session["is_admin"] = False
+    session["isAdmin"] = False
 
     return redirect(url_for("index"))
 
@@ -179,9 +181,43 @@ def login():
 
 
     session["username"] = username_db
-    session["is_admin"] = bool(is_admin)
+    session["isAdmin"] = bool(is_admin)
 
     return redirect(url_for("index"))
+
+@app.route("/creer_quiz", methods=["GET", "POST"])
+def create_quiz():
+    if not session.get("username"):
+        return redirect(url_for("login"))
+    if not session.get("isAdmin"):
+        return "Vous avez pas le droit : que les administrateurs !!!"
+    
+    if request.method == "GET":
+        return render_template("new_quiz.html")
+    
+    donnees = request.get_json()
+    titre_quiz = donnees.get("title", "")
+    questions_liste = data.get("questions", [])
+    if not titre_quiz or not questions_liste:
+        return jsonify({"error": "Le titre et les questions sont obligaroire"})
+    quiz_data_bdd = []
+    for q in questions_liste:
+        question_text = q.get("title", "").strip()
+        reponses = [
+            (ans.get("title", "").strip(), bool(ans.get("correct", False)))
+            for ans in q.get("answers", [])
+            if ans.get("title", "").strip()
+        ]
+        if question_text and reponses:
+            quiz_data_bdd.append((question_text, reponses))
+
+    if not quiz_data_bdd:
+        return jsonify({"error": "Chaque quest doit avoir un nom et des reponses"})
+
+    db.create_quizz(quiz_data_bdd, titre_quiz)
+    return jsonify({"status": "success", "redirect": url_for("index")})
+    
+    
 
 
 

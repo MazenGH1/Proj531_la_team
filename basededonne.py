@@ -51,7 +51,8 @@ def init_BDD() -> None:
                                NOT
                                NULL
                                PRIMARY
-                               KEY,
+                               KEY
+                               AUTOINCREMENT,
                                titre
                                TEXT
                                NOT
@@ -66,7 +67,8 @@ def init_BDD() -> None:
                                NOT
                                NULL
                                PRIMARY
-                               KEY,
+                               KEY
+                               AUTOINCREMENT,
                                question
                                TEXT
                                NOT
@@ -93,7 +95,8 @@ def init_BDD() -> None:
                                NOT
                                NULL
                                PRIMARY
-                               KEY,
+                               KEY
+                               AUTOINCREMENT,
                                reponse
                                TEXT
                                NOT
@@ -143,7 +146,8 @@ def init_BDD() -> None:
                                NOT
                                NULL
                                PRIMARY
-                               KEY,
+                               KEY
+                               AUTOINCREMENT,
                                dateHeure
                                TIMESTAMP
                                NOT
@@ -285,16 +289,7 @@ def create_quizz(quiz: list[tuple[str, list[tuple[str, bool]]]], titre: str) -> 
         id_quiz = cursor.lastrowid
 
         for texte_question, reponses in quiz:
-            cursor.execute(
-                "INSERT INTO Question (question, id_quiz) VALUES (?, ?)",
-                (texte_question, id_quiz),
-            )
-            id_question = cursor.lastrowid
-
-            cursor.executemany(
-                "INSERT INTO Reponse (reponse, correct, id_question) VALUES (?, ?, ?)",
-                [(texte_rep, correct, id_question) for texte_rep, correct in reponses],
-            )
+            create_question(texte_question, reponses, id_quiz, conn)
 
         conn.commit()
     except sqlite3.Error as error:
@@ -304,6 +299,46 @@ def create_quizz(quiz: list[tuple[str, list[tuple[str, bool]]]], titre: str) -> 
         # This guarantees the file unlocks
         if conn:
             conn.close()
+
+def create_question(question : str, reponses : list[tuple[str, bool]], id_quiz : int|None, conn = None) -> None:
+    has_conn = True
+    try :
+        if conn is None:
+            conn = get_sql_connection()
+            has_conn = False
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO Question (question, id_quiz) VALUES (?, ?)", (question, id_quiz))
+        id_question = cursor.lastrowid
+
+        for texte_rep, correct in reponses:
+            create_reponse(texte_rep, correct, id_question, conn)
+
+        conn.commit()
+    except sqlite3.Error as error:
+        print(f"Database error: {error}")
+        raise
+    finally:
+        if conn and not has_conn:
+            conn.close()
+
+def create_reponse(message : str, correct: bool, id_quest : int|None, conn = None) -> None:
+    has_conn = True
+    try :
+        if conn is None:
+            conn = get_sql_connection()
+            has_conn = False
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO Reponse (reponse, correct, id_question) VALUES (?, ?, ?)", (message, correct, id_quest))
+
+        conn.commit()
+    except sqlite3.Error as error:
+        print(f"Database error: {error}")
+        raise
+    finally:
+        if conn and not has_conn:
+            conn.close()
+
+
 
 
 def create_user(username: str, pass_hash: str, is_admin: bool = False) -> bool:
@@ -421,15 +456,18 @@ if __name__ == "__main__":
             ],
             "Quiz 1"
         )
+        create_user("Robert", "oUsItItI", True)
+        create_user("Alban", "244466666", False)
+        create_user("Frederic EricFred", "baheoyghluqvsjdfkbnphate^r£ZQFJ", True)
     else:
         print("Quiz already exists in database.")
 
     print("Tous les quiz :", get_all_quiz())
     print("Questions du quiz 1 :", get_qa_from(1))
     print("Resultats :", get_all_reponse_from_resultat(1))
-    # print(get_all_reponse_from_resultat(1))
-    # create_user("Robert", "oUsItItI", True)
-    # create_user("Alban", "244466666", False)
+    #print(get_all_reponse_from_resultat(1))
+    create_user("Robert", "oUsItItI", True)
+    create_user("Alban", "244466666", False)
     #
     # create_resultat(1, "Alban")
     # create_aCommeReponse(1, 1)
