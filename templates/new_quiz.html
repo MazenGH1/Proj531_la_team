@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un nouveau quiz</title>
+    <link rel="stylesheet" href="../static/styles/new_quiz.css"/>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="/" class="back-link">← Retour à l'accueil</a>
+    </div>
+
+    <h1>Créer un nouveau quiz</h1>
+
+    <form class="quiz-form" onsubmit="event.preventDefault();">
+        <label for="quiz_name">Titre du nouveau quiz :</label>
+        <input type="text" name="quiz_name" id="quiz_name" placeholder="Ex : Culture Générale"/>
+    </form>
+
+    <div class="questions" id="question-container"></div>
+
+    <div class="btn-container">
+        <div class="create-btn" onclick="new_question()" title="Ajouter une nouvelle question">
+            <object class="plus-icon" data="../static/icons/plus.svg" type="image/svg+xml"></object>
+            <span>Ajouter une question</span>
+        </div>
+    </div>
+
+    <div class="submit-container">
+        <button type="button" class="submit-btn" onclick="submit()">Enregistrer le quiz</button>
+    </div>
+
+    <script src="../static/scripts/new_quiz.js" defer></script>
+</body>
+</html>

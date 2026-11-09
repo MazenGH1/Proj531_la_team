@@ -1,0 +1,115 @@
+/* Page */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    background:linear-gradient(
+        135deg,
+        #00153a,
+        #003e91,
+        #00153a
+    );
+
+    color:white;
+}
+
+/* Conteneur principal */
+
+.quiz-home{
+    min-height:100vh;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    padding:40px;
+}
+
+/* Zone titre */
+
+.Acceuil-zone{
+    text-align:center;
+
+    margin-bottom:50px;
+}
+
+/* Titre */
+
+.Acceuil{
+    font-size:3rem;
+
+    color:white;
+
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.5),
+        0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Zone des quiz */
+
+.start-zone{
+
+    width:100%;
+    max-width:1200px;
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+}
+
+/* Boutons */
+
+.start-quiz{
+
+    height:120px;
+
+    border:none;
+
+    border-radius:20px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:1.3rem;
+    font-weight:bold;
+
+    background:linear-gradient(
+        180deg,
+        #28a4ff,
+        #005ee0
+    );
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.4);
+
+    transition:all 0.25s ease;
+}
+
+/* Survol */
+
+.start-quiz:hover{
+
+    transform:translateY(-5px);
+
+    background:linear-gradient(
+        180deg,
+        #52b8ff,
+        #0077ff
+    );
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.5);
+
+}
