@@ -145,7 +145,7 @@ def cree_compte():
     if not success:
         return "Ce nom d'utilisateur existe déjà.", 409
 
-    # log in direct aores creation de compte
+    # log in direct apres creation de compte
     session["username"] = username
     session["isAdmin"] = False
 
@@ -199,7 +199,7 @@ def create_quiz():
     titre_quiz = donnees.get("title", "")
     questions_liste = data.get("questions", [])
     if not titre_quiz or not questions_liste:
-        return jsonify({"error": "Le titre et les questions sont obligaroire"})
+        return jsonify({"error": "Le titre et les questions sont obligatoire !!"})
     quiz_data_bdd = []
     for q in questions_liste:
         question_text = q.get("title", "").strip()
