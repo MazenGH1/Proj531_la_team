@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un nouveau quiz</title>
+    <link rel="stylesheet" href="../static/css/new_quiz.css"/>
+</head>
+<body>
+<h1>Créer un nouveau quiz</h1>
+<form method="POST" class="quiz-form" action="">
+    <label for="quiz_name">Titre du nouveau quiz :</label>
+    <input type="text" name="quiz_name" id="quiz_name" placeholder="Nom du quiz"/>
+</form>
+<div class="questions" id="question-container">
+
+</div>
+<div class="btn-container">
+    <div class="create-btn" onclick="new_question()">
+        <object class="plus-icon" data="../static/icons/plus.svg" type="image/svg+xml"></object>
+    </div>
+</div>
+<script src="../static/scripts/new_quiz.js" defer></script>
+</body>
+</html>
