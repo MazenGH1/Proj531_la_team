@@ -29,10 +29,14 @@
             </h1>
         </div>
 
+        
         <div class="start-zone">
             {% for quiz in quizzes %}
             <button class="start-quiz" id="{{ quiz[0] }}">{{ quiz[1] }}</button>
             {% endfor %}
+            {% if session.get('isAdmin') %}
+            <span>(Admin)</span> | <a href="/creer_quiz">Créer un quiz</a>
+            {% endif %}
         </div>
     </div>
 
