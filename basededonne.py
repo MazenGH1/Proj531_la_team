@@ -439,6 +439,26 @@ def get_all_reponse_from_resultat(id_resultat: int) -> list[tuple[int,str, bool,
         print(f"Erreur dans BDD: {error}")
         return None
 
+def get_all_result_from_user(username : str) -> list[tuple[int, str, int]] | None:
+    """
+    :return: list[tuple[id_resultat, dateHeure, id_quiz]]
+    """
+    query = """
+            SELECT id, dateHeure, id_quiz FROM Resultat
+            WHERE username = ?
+            """
+    try:
+        with get_sql_connection() as conn:
+            res = []
+            cursor = conn.cursor()
+            cursor.execute(query, (username,))
+            for line in cursor.fetchall():
+                res.append((line[0],line[1],line[2]))
+            return res
+    except sqlite3.Error as error:
+        print(f"Erreur dans BDD: {error}")
+        return None
+
 
 
 
@@ -469,6 +489,7 @@ if __name__ == "__main__":
     create_user("Robert", "oUsItItI", True)
     create_user("Alban", "244466666", False)
     #
-    # create_resultat(1, "Alban")
-    # create_aCommeReponse(1, 1)
-    # create_aCommeReponse(5, 1)
+    create_resultat(1, "Alban")
+    create_aCommeReponse(1, 1)
+    create_aCommeReponse(5, 1)
+    print(get_all_result_from_user("Alban"))
