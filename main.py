@@ -195,8 +195,11 @@ def login():
 
 @app.route("/creer_quiz", methods=["GET", "POST"])
 def create_quiz():
+    # Le createur doit etre logged in pour cree un quiz
     if not session.get("username"):
         return redirect(url_for("login"))
+    
+    # Il doit aussi etre admin 
     if not session.get("isAdmin"):
         return "Vous n'avez pas le droit : réservé aux administrateurs !", 403
     
