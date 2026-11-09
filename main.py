@@ -23,8 +23,16 @@ if len(existing_quizzes) == 0:
         "Quiz 1"
     )
 
-
-
+# Crée les utilisateurs par défaut avec un mot de passe haché s'ils n'existent pas
+if not db.get_user_by_username("Robert"):
+    db.create_user("Robert", generate_password_hash("oUsItItI"), True)
+if not db.get_user_by_username("Alban"):
+    db.create_user("Alban", generate_password_hash("244466666"), False)
+if not db.get_user_by_username("Frederic EricFred"):
+    db.create_user("Frederic EricFred", generate_password_hash("baheoyghluqvsjdfkbnphate^r£ZQFJ"), True)
+    
+    
+    
 @app.route("/")
 def index():
     quiz_liste = db.get_all_quiz()
@@ -190,16 +198,18 @@ def create_quiz():
     if not session.get("username"):
         return redirect(url_for("login"))
     if not session.get("isAdmin"):
-        return "Vous avez pas le droit : que les administrateurs !!!"
+        return "Vous n'avez pas le droit : réservé aux administrateurs !", 403
     
     if request.method == "GET":
         return render_template("new_quiz.html")
     
-    donnees = request.get_json()
-    titre_quiz = donnees.get("title", "")
-    questions_liste = data.get("questions", [])
+    donnees = request.get_json() or {}
+    titre_quiz = donnees.get("title", "").strip()
+    questions_liste = donnees.get("questions", [])  
+
     if not titre_quiz or not questions_liste:
-        return jsonify({"error": "Le titre et les questions sont obligaroire"})
+        return jsonify({"error": "Le titre et les questions sont obligatoires."}), 400
+
     quiz_data_bdd = []
     for q in questions_liste:
         question_text = q.get("title", "").strip()
@@ -208,18 +218,18 @@ def create_quiz():
             for ans in q.get("answers", [])
             if ans.get("title", "").strip()
         ]
-        if question_text and reponses:
+        # Vérifie que la question a un titre, au moins 2 réponses, et au moins 1 bonne réponse
+        has_correct = any(correct for _, correct in reponses)
+        if question_text and len(reponses) >= 2 and has_correct:
             quiz_data_bdd.append((question_text, reponses))
-
-    if not quiz_data_bdd:
-        return jsonify({"error": "Chaque quest doit avoir un nom et des reponses"})
+        else:
+            return jsonify({
+                "error": "Chaque question doit avoir un titre, au moins 2 réponses et au moins 1 réponse correcte."
+            }), 400
 
     db.create_quizz(quiz_data_bdd, titre_quiz)
     return jsonify({"status": "success", "redirect": url_for("index")})
     
-    
-
-
 
 
 if __name__ == "__main__":
