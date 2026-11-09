@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/index.css">
+    <link rel="stylesheet" href="../static/styles/index.css">
     <title>Quiz de folie</title>
 </head>
 <body>
@@ -13,18 +13,19 @@
         <div class="user-bar" style="text-align: right; padding: 10px 20px;">
             {% if session.get('username') %}
                 <span>Connecté en tant que <strong>{{ session['username'] }}</strong></span>
-                            {% if session.get('isAdmin') %}
-            <span>(Admin)</span> | <a href="/creer_quiz">Créer un quiz</a>
-            {% endif %}
-            
-                | <a href="/logout">Déconnexion</a>
+                {% if session.get('isAdmin') %}
+                    <span>(Admin)</span>
+                {% endif %}
+                
+                | <a href="/logout" style="color: white;">Déconnexion</a>
+                
+                {% if session.get('isAdmin') %}
+                    | <a href="/creer_quiz" style="color: white;">Créer un quiz</a>
+                {% endif %}
             {% else %}
-                <a href="/login" style="color: white; ">Se connecter</a> |
-                <a href="/cree" style="color: white; ">Créer un compte</a>
+                <a href="/login" style="color: white;">Se connecter</a> |
+                <a href="/cree" style="color: white;">Créer un compte</a>
             {% endif %}
-
-
-
         </div>
 
         <div class="Acceuil-zone">
@@ -33,7 +34,6 @@
             </h1>
         </div>
 
-        
         <div class="start-zone">
             {% for quiz in quizzes %}
             <button class="start-quiz" id="{{ quiz[0] }}">{{ quiz[1] }}</button>
@@ -41,6 +41,6 @@
         </div>
     </div>
 
-    <script src="../static/script.js"></script>
+    <script src="../static/scripts/script.js"></script>
 </body>
 </html>
