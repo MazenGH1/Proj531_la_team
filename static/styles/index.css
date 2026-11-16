@@ -1,91 +1,221 @@
-/* Page */
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/
+/* ========================================
+   PAGE GÉNÉRALE
+======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-    min-height:100vh;
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
 
-    font-family:Arial, Helvetica, sans-serif;
-
-    background:linear-gradient(
+    background: linear-gradient(
         135deg,
         #00153a,
         #003e91,
         #00153a
     );
 
-    color:white;
+    color: white;
 }
 
-/* Conteneur principal */
 
-.quiz-home{
-    min-height:100vh;
+/* ========================================
+   CONTENEUR PRINCIPAL
+======================================== */
 
-    display:flex;
-    flex-direction:column;
+.quiz-home {
+    min-height: 100vh;
 
-    justify-content:center;
-    align-items:center;
+    display: flex;
+    flex-direction: column;
 
-    padding:40px;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px;
 }
 
-/* Zone titre */
 
-.Acceuil-zone{
-    text-align:center;
+/* ========================================
+   NAVIGATION EN HAUT À DROITE
+======================================== */
 
-    margin-bottom:50px;
+.top-nav {
+    position: fixed;
+    top: 25px;
+    right: 35px;
+
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* Titre */
 
-.Acceuil{
-    font-size:3rem;
+/* Style commun des liens */
 
-    color:white;
+.top-nav a {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+
+    padding: 11px 19px;
+    border-radius: 12px;
+
+    transition: all 0.25s ease;
+}
+
+
+/* Se connecter */
+
+.login-link {
+    color: #48e5c2;
+    border: 1px solid #48e5c2;
+    background: rgba(255,255,255,0.05);
+}
+
+.login-link:hover {
+    background: #48e5c2;
+    color: #00153a;
+    transform: translateY(-3px);
+}
+
+
+/* Créer un compte */
+
+.register-link {
+    color: #00153a;
+    background: #48e5c2;
+    border: 1px solid #48e5c2;
+}
+
+.register-link:hover {
+    background: #70f5d8;
+    transform: translateY(-3px);
+
+    box-shadow: 0 5px 15px rgba(72,229,194,0.3);
+}
+
+
+/* ========================================
+   UTILISATEUR CONNECTÉ
+======================================== */
+
+.user-welcome {
+    color: white;
+
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+
+    padding: 11px 16px;
+    border-radius: 12px;
+
+    font-size: 14px;
+}
+
+
+/* Badge administrateur */
+
+.admin-badge {
+    color: #00153a;
+    background: #48e5c2;
+
+    padding: 3px 7px;
+    border-radius: 6px;
+
+    font-size: 11px;
+    margin-left: 5px;
+}
+
+
+/* Déconnexion */
+
+.logout-link {
+    color: white;
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+.logout-link:hover {
+    background: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+}
+
+
+/* Créer un quiz */
+
+.create-quiz-link {
+    color: #48e5c2;
+    border: 1px solid #48e5c2;
+}
+
+.create-quiz-link:hover {
+    background: #48e5c2;
+    color: #00153a;
+    transform: translateY(-2px);
+}
+
+
+/* ========================================
+   ZONE DU TITRE
+======================================== */
+
+.Acceuil-zone {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+
+/* Titre principal */
+
+.Acceuil {
+    font-size: 3rem;
+    color: white;
 
     text-shadow:
         0 0 10px rgba(255,255,255,0.5),
         0 0 20px rgba(0,0,0,0.5);
 }
 
-/* Zone des quiz */
 
-.start-zone{
+/* ========================================
+   ZONE DES QUIZ
+======================================== */
 
-    width:100%;
-    max-width:1200px;
+.start-zone {
+    width: 100%;
+    max-width: 1200px;
 
-    display:grid;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
 
-    grid-template-columns:repeat(4,1fr);
-
-    gap:20px;
+    gap: 20px;
 }
 
-/* Boutons */
 
-.start-quiz{
+/* ========================================
+   BOUTONS DES QUIZ
+======================================== */
 
-    height:120px;
+.start-quiz {
+    height: 120px;
 
-    border:none;
+    border: none;
+    border-radius: 20px;
 
-    border-radius:20px;
+    cursor: pointer;
 
-    cursor:pointer;
+    color: white;
 
-    color:white;
+    font-size: 1.3rem;
+    font-weight: bold;
 
-    font-size:1.3rem;
-    font-weight:bold;
-
-    background:linear-gradient(
+    background: linear-gradient(
         180deg,
         #28a4ff,
         #005ee0
@@ -94,16 +224,16 @@ body{
     box-shadow:
         0 5px 15px rgba(0,0,0,0.4);
 
-    transition:all 0.25s ease;
+    transition: all 0.25s ease;
 }
 
-/* Survol */
 
-.start-quiz:hover{
+/* Effet au survol */
 
-    transform:translateY(-5px);
+.start-quiz:hover {
+    transform: translateY(-5px);
 
-    background:linear-gradient(
+    background: linear-gradient(
         180deg,
         #52b8ff,
         #0077ff
@@ -111,5 +241,74 @@ body{
 
     box-shadow:
         0 10px 25px rgba(0,0,0,0.5);
+}
+
+
+/* ========================================
+   RESPONSIVE : TABLETTES
+======================================== */
+
+@media (max-width: 900px) {
+
+    .start-zone {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .Acceuil {
+        font-size: 2.5rem;
+    }
 
 }
+
+
+/* ========================================
+   RESPONSIVE : MOBILES
+======================================== */
+
+@media (max-width: 600px) {
+
+    .quiz-home {
+        padding: 25px 15px;
+    }
+
+    .top-nav {
+        position: relative;
+        top: auto;
+        right: auto;
+
+        justify-content: center;
+        flex-wrap: wrap;
+
+        margin: 15px auto 35px;
+        padding: 0 10px;
+    }
+
+    .top-nav a {
+        font-size: 12px;
+        padding: 9px 12px;
+    }
+
+    .user-welcome {
+        font-size: 12px;
+    }
+
+    .Acceuil {
+        font-size: 2rem;
+    }
+
+    .Acceuil-zone {
+        margin-bottom: 35px;
+    }
+
+    .start-zone {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .start-quiz {
+        height: 100px;
+        font-size: 1.1rem;
+    }
+
+}
+

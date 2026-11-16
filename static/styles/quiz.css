@@ -13,6 +13,8 @@ body{
         #003e91,
         #00153a
     );
+    background-attachment: fixed;
+    background-size: cover;
     color:white;
     height:100vh;
 }
