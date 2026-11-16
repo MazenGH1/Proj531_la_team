@@ -20,7 +20,7 @@ function init(score, total) {
         } else if (pourcentage >= 50) {
             message.textContent = "Bien joué, continue ! 👍";
         } else {
-            message.textContent = "Force à toi 🥀";
+            message.textContent = "Encore un peu d'entraînement 🥀";
         }
     }
 }

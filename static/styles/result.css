@@ -5,8 +5,13 @@
 }
 
 body{
-    font-family:Arial, sans-serif;
-    background:#00153a;
+    font-family: Arial, Helvetica, sans-serif;
+    background:linear-gradient(
+        135deg,
+        #00153a,
+        #003e91,
+        #00153a
+    );
     color:white;
     height:100vh;
 }
@@ -139,7 +144,7 @@ body{
 }
 
 /* Bouton pour recommencer */
-.restart {
+.main_menu {
     display: block;
     text-align: center;
     text-decoration: none;

@@ -7,7 +7,12 @@
 
 body{
     font-family:Arial, sans-serif;
-    background:#00153a;
+    background:linear-gradient(
+        135deg,
+        #00153a,
+        #003e91,
+        #00153a
+    );
     color:white;
     height:100vh;
 }
