@@ -86,7 +86,7 @@ h1 {
     }
 
     .delete-question-btn {
-      background-color: #ff6b6b;
+      background-color: #212d8b;
       color: white;
       border: none;
       padding: 0.45em 0.85em;
@@ -95,7 +95,7 @@ h1 {
       font-weight: bold;
 
       &:hover {
-        background-color: #e05252;
+        background-color: #222290;
       }
     }
   }
@@ -141,14 +141,14 @@ h1 {
   .delete-answer-btn {
     background-color: transparent;
     border: none;
-    color: #c0392b;
+    color: white;
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
     padding: 0.25em 0.5em;
 
     &:hover {
-      color: #ff0000;
+      color: white;
     }
   }
 }
