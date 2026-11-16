@@ -66,6 +66,11 @@ def result():
     titre_quiz = next((titre for q_id, titre in all_quizzes if q_id == quiz_id), None)
 
     correct, total = compute_score(quiz_id, quiz_result)
+    username = session["username"]
+    id_resultat = db.create_resultat(quiz_id, username)
+    for id_rep in quiz_result:
+        db.create_aCommeReponse(id_rep,id_resultat)
+    
     print(correct, total)
     return render_template("result.html", correct=correct, total=total, title=titre_quiz)
 
@@ -233,6 +238,19 @@ def create_quiz():
     db.create_quizz(quiz_data_bdd, titre_quiz)
     return jsonify({"status": "success", "redirect": url_for("index")})
     
+@app.route("/historique/<username>")
+def history(username: str):
+     # Le createur doit etre logged in pour consulter son history
+    if not session.get("username"):
+        return redirect(url_for("login"))
+    
+    session["username"] = username_db
+    res=db.get_all_result_from_user(username)
+    history=[]
+    for id_res, date, id_quiz in res:
+        reponses = db.get_all_reponse_from_resultat(id_res)
+        history.append({'id': id_res, 'date': date, 'quiz': id_quiz, 'reponses': reponses})
+    return render_template("historique.html", history=history)
 
 
 if __name__ == "__main__":

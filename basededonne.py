@@ -379,7 +379,7 @@ def get_user_by_username(username: str) -> tuple[str, str, bool] | None:
         if conn:
             conn.close()
 
-def create_resultat(id_quiz: int, username: str) -> bool:
+def create_resultat(id_quiz: int, username: str):
     query = """
             INSERT INTO Resultat (id_quiz, username, dateHeure)
             VALUES (?, ?, CURRENT_TIMESTAMP)          
@@ -389,13 +389,10 @@ def create_resultat(id_quiz: int, username: str) -> bool:
             cursor = conn.cursor()
             cursor.execute(query, (id_quiz, username))
             conn.commit()
-            return True
+            return cursor.lastrowid
     except sqlite3.Error as error:
         print(f"Erreur dans BDD: {error}")
-        return False
-    finally:
-        if conn:
-            conn.close()
+        return None
 
 def create_aCommeReponse(id_reponse: int, id_resultat: int) -> bool:
     query = """
@@ -463,33 +460,4 @@ def get_all_result_from_user(username : str) -> list[tuple[int, str, int]] | Non
 
 
 if __name__ == "__main__":
-    init_BDD()
-    existing_quizzes = get_all_quiz()
-    if len(existing_quizzes) == 0:
-        print("Database empty! Inserting sample quiz...")
-        create_quizz(
-            [
-                ("Quelle est la capitale de la Suisse ?",
-                 [("Berne", True), ("Genève", False), ("Bâle", False)]),
-                ("Combien font 7+7 ?",
-                 [("13", False), ("14", True), ("15", False)]),
-            ],
-            "Quiz 1"
-        )
-        create_user("Robert", "oUsItItI", True)
-        create_user("Alban", "244466666", False)
-        create_user("Frederic EricFred", "baheoyghluqvsjdfkbnphate^r£ZQFJ", True)
-    else:
-        print("Quiz already exists in database.")
-
-    print("Tous les quiz :", get_all_quiz())
-    print("Questions du quiz 1 :", get_qa_from(1))
-    print("Resultats :", get_all_reponse_from_resultat(1))
-    #print(get_all_reponse_from_resultat(1))
-    create_user("Robert", "oUsItItI", True)
-    create_user("Alban", "244466666", False)
-    #
-    create_resultat(1, "Alban")
-    create_aCommeReponse(1, 1)
-    create_aCommeReponse(5, 1)
-    print(get_all_result_from_user("Alban"))
+    pass
