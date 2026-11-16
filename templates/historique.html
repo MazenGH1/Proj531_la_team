@@ -9,6 +9,8 @@
 
 <h1>Mon historique de quiz</h1>
 
+<a href="{{ url_for('index') }}" class="main_menu">Retour au menu principal</a>
+
 {% if history|length == 0 %}
 
     <p>Aucun quiz terminé pour le moment.</p>
@@ -56,6 +58,7 @@
     {% endfor %}
 
 {% endif %}
+
 
 </body>
 </html>

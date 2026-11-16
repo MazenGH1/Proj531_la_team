@@ -22,6 +22,25 @@ if len(existing_quizzes) == 0:
         ],
         "Quiz 1"
     )
+    
+    db.create_quizz(
+        [
+            ("Qui est le GOAT du football",
+             [("Cristiano Ronaldo", True), ("Lionel Messi", False), ("Alban Stora", False),("Maradona ", False)]),
+            ("Quel club a le plus de Champions League",
+             [("Real Madrid", True), ("PSG", False), ("Arsenal", False),("AC Milan", False)]),
+            
+            ("Combien de Champions League Real Madrid a",
+             [("13", False), ("15", True), ("2", False),("5", False)]),
+            
+            
+             ("Combien de Ballon d'or Neyman Jr a ",
+             [("3", True), ("4", False), ("0", True),("1", False)])
+        ],
+        "Football"
+    )
+        
+        
 
 # Crée les utilisateurs par défaut avec un mot de passe haché s'ils n'existent pas
 if not db.get_user_by_username("Robert"):
@@ -59,19 +78,24 @@ def compute_score(quiz_id : int, answers : list[int]) -> tuple[int, int]:
 
 @app.route("/result")
 def result():
-    quiz_id = eval(request.args.get("quiz_id"))
-    quiz_result = eval(request.args["quiz_result"])
+    try:
+        quiz_id = int(request.args.get("quiz_id", 0))
+        quiz_result = json.loads(request.args.get("quiz_result", "[]"))
+    except (ValueError, TypeError, json.JSONDecodeError):
+        return "Paramètres de résultat invalides.", 400
 
     all_quizzes = db.get_all_quiz()
     titre_quiz = next((titre for q_id, titre in all_quizzes if q_id == quiz_id), None)
 
     correct, total = compute_score(quiz_id, quiz_result)
-    username = session["username"]
-    id_resultat = db.create_resultat(quiz_id, username)
-    for id_rep in quiz_result:
-        db.create_aCommeReponse(id_rep,id_resultat)
-    
-    print(correct, total)
+
+    username = session.get("username")
+    if username:
+        id_resultat = db.create_resultat(quiz_id, username)
+        if id_resultat is not None:
+            for id_rep in quiz_result:
+                db.create_aCommeReponse(id_rep, id_resultat)
+
     return render_template("result.html", correct=correct, total=total, title=titre_quiz)
 
 
@@ -246,7 +270,7 @@ def hist(username: str):
     
     username_db = session["username"] 
     
-    res=db.get_all_result_from_user(username)
+    res = db.get_all_result_from_user(username_db)
     history=[]
     for id_res, date, id_quiz in res:
         reponses = db.get_all_reponse_from_resultat(id_res)

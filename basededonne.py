@@ -15,7 +15,9 @@ BDD_CHEMIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Quizco.db
 
 
 def get_sql_connection() -> sqlite3.Connection:
-    return sqlite3.connect(BDD_CHEMIN)
+    conn = sqlite3.connect(BDD_CHEMIN)
+    conn.execute("PRAGMA foreign_keys = ON;")
+    return conn
 
 
 def get_max_id(table: str) -> int:

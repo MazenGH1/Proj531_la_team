@@ -20,10 +20,10 @@
 
         <section class="score-card">
             <p class="score-label">Ton score</p>
-
+                
             <h2><span id="score">{{ correct }}</span> <span> / <span id="total">{{ total }}</span></span></h2>
 
-            <p class="percentage" id="percentage">{{ correct/total * 100 }} % de réussite</p>
+            <p class="percentage" id="percentage">{{ (correct / total * 100) | round | int if total > 0 else 0 }} % de réussite</p>
 
             <div class="progress-bar">
                 <div class="progress" id="progress"></div>
