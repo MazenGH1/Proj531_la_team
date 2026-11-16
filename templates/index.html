@@ -20,6 +20,11 @@
                         <span class="admin-badge">Admin</span>
                     {% endif %}
                 </span>
+                
+                
+                <a href="/historique/{{session['username']}}" class="history-link">
+                📊 Mon historique
+                </a>
 
                 {% if session.get('isAdmin') %}
                     <a href="/creer_quiz" class="create-quiz-link">

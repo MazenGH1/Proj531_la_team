@@ -312,3 +312,21 @@ body {
 
 }
 
+
+/* ========================================
+   HISTORIQUE DES QUIZ
+======================================== */
+
+.history-link {
+    color: #00153a;
+    background: #48e5c2;
+    border: 1px solid #48e5c2;
+}
+
+.history-link:hover {
+    background: #70f5d8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(72,229,194,0.3);
+}
+
+

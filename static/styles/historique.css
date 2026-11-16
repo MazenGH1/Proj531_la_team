@@ -1,0 +1,278 @@
+
+/* ========================================
+   RESET & BASE
+======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: linear-gradient(
+        135deg,
+        #00153a,
+        #003e91,
+        #00153a
+    );
+
+    background-attachment: fixed;
+
+    color: white;
+}
+
+/* ========================================
+   CONTENEUR PRINCIPAL
+======================================== */
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* ========================================
+   TITRE PRINCIPAL
+======================================== */
+
+h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 35px;
+
+    color: white;
+
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.2);
+}
+
+/* ========================================
+   CARTE HISTORIQUE
+======================================== */
+
+.history-card {
+    background: #0b2854;
+
+    padding: 25px;
+    margin-bottom: 25px;
+
+    border-radius: 18px;
+    border: 1px solid #25446f;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+
+    transition: 0.2s;
+}
+
+.history-card:hover {
+    border-color: #48e5c2;
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   EN-TÊTE DU QUIZ
+======================================== */
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+    margin-bottom: 25px;
+
+    padding-bottom: 15px;
+    border-bottom: 1px solid #25446f;
+}
+
+.history-header h2 {
+    font-size: 23px;
+    color: #48e5c2;
+}
+
+.quiz-date {
+    color: #a9bbdc;
+    font-size: 14px;
+
+    background: #061d40;
+
+    padding: 9px 14px;
+    border-radius: 8px;
+}
+
+/* ========================================
+   SOUS-TITRES
+======================================== */
+
+.history-card h3 {
+    font-size: 18px;
+    margin-bottom: 18px;
+    color: white;
+}
+
+/* ========================================
+   TABLEAU
+======================================== */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+
+    border-radius: 10px;
+    border: 1px solid #25446f;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    background: #061d40;
+    text-align: left;
+}
+
+thead {
+    background: #153d70;
+}
+
+th {
+    color: #48e5c2;
+
+    padding: 16px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+td {
+    padding: 15px 16px;
+
+    color: #dce7fa;
+    font-size: 14px;
+
+    border-top: 1px solid #25446f;
+}
+
+/* Alternance des lignes */
+
+tbody tr:nth-child(even) {
+    background: rgba(255,255,255,0.03);
+}
+
+/* Survol des lignes */
+
+tbody tr:hover {
+    background: #15365f;
+}
+
+/* ========================================
+   RÉSULTATS
+======================================== */
+
+.result {
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+.correct {
+    color: #48e5c2;
+    background: #153f52;
+}
+
+.incorrect {
+    color: #ff7373;
+    background: #512c46;
+}
+
+/* ========================================
+   HISTORIQUE VIDE
+======================================== */
+
+.empty-card {
+    background: #0b2854;
+
+    padding: 35px 25px;
+
+    border-radius: 18px;
+    border: 1px solid #25446f;
+
+    text-align: center;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.empty-card p {
+    color: #a9bbdc;
+    font-size: 17px;
+}
+
+/* ========================================
+   BOUTON RETOUR
+======================================== */
+
+.back-link {
+    display: block;
+
+    width: fit-content;
+    margin: 30px auto 0;
+
+    padding: 14px 25px;
+
+    background: #48e5c2;
+    color: #00153a;
+
+    text-decoration: none;
+    font-weight: bold;
+
+    border-radius: 10px;
+
+    transition: 0.2s;
+}
+
+.back-link:hover {
+    background: #70f5d8;
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   RESPONSIVE MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 25px 15px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+
+    .history-card {
+        padding: 18px;
+    }
+
+    .history-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    th, td {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+}
