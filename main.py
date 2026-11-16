@@ -239,17 +239,18 @@ def create_quiz():
     return jsonify({"status": "success", "redirect": url_for("index")})
     
 @app.route("/historique/<username>")
-def history(username: str):
+def hist(username: str):
      # Le createur doit etre logged in pour consulter son history
     if not session.get("username"):
         return redirect(url_for("login"))
     
-    session["username"] = username_db
+    username_db = session["username"] 
+    
     res=db.get_all_result_from_user(username)
     history=[]
     for id_res, date, id_quiz in res:
         reponses = db.get_all_reponse_from_resultat(id_res)
-        history.append({'id': id_res, 'date': date, 'quiz': id_quiz, 'reponses': reponses})
+        history.append({'id': id_res, 'date': date, 'quiz': id_quiz, 'reponse': reponses})
     return render_template("historique.html", history=history)
 
 

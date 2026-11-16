@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Historique</title>
+</head>
+
+<body>
+
+<h1>Mon historique de quiz</h1>
+
+{% if history|length == 0 %}
+
+    <p>Aucun quiz terminé pour le moment.</p>
+
+{% else %}
+
+    {% for res in history %}
+
+        <h2>Quiz {{ res.id }}</h2>
+
+        <p>
+            Date : {{ res.date }}
+        </p>
+
+        <h3>Réponses :</h3>
+
+        <table border="1">
+            <tr>
+                <th>Question ID</th>
+                <th>Réponse donnée</th>
+                <th>Résultat</th>
+            </tr>
+
+            {% for rep in res.reponse %}
+
+            <tr>
+                <td>{{ rep[3] }}</td>
+
+                <td>{{ rep[1] }}</td>
+
+                {% if rep[2] %}
+                    <td>✅ Correct</td>
+                {% else %}
+                    <td>❌ Faux</td>
+                {% endif %}
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        <hr>
+
+    {% endfor %}
+
+{% endif %}
+
+</body>
+</html>
