@@ -7,6 +7,7 @@ import basededonne as db
 
 app = Flask(__name__)
 app.secret_key = "xJ7$P9vLm2!Qk8#Rz5@Tn1&Ws4*Hb6YfC3dE9uNp0"
+ADMIN_SECRET_KEY = "kirk"
 
 
 db.init_BDD()
@@ -236,31 +237,36 @@ def quiz_api(id_quiz):
 
 
 
+@app.route('/cree', methods=['GET', 'POST'])
+def cree():
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        admin_key = request.form.get('admin_key', '').strip()
 
-@app.route("/cree", methods=["GET", "POST"])
-def cree_compte():
-    if request.method == "GET":
-        return render_template("cree.html")
+        if not username or not password:
+            return render_template('cree.html', error="Veuillez remplir tous les champs obligatoires.")
 
-    username = request.form.get("username", "").strip()
-    password = request.form.get("password", "")
+        if admin_key:
+            if admin_key == ADMIN_SECRET_KEY:
+                is_admin = True
+            else:
+                return render_template('cree.html', error="Clé Admin incorrecte!!")
+        else:
+            is_admin = False
 
-    if not username or not password:
-        return "Username et mot de passe ne peuvent pas être vides !", 400
+        pass_hash = generate_password_hash(password)
+        success = db.create_user(username, pass_hash, is_admin)
 
-    if len(username) > 50:
-        return "Username trop long.", 400
+        if not success:
+            return render_template('cree.html', error="Ce nom d'utilisateur est déjà utilisé.")
 
-    mdp_hashed = generate_password_hash(password)
-    success = db.create_user(username, mdp_hashed)
-    if not success:
-        return "Ce nom d'utilisateur existe déjà.", 409
-
-    # log in direct aores creation de compte
-    session["username"] = username
-    session["isAdmin"] = False
-
-    return redirect(url_for("index"))
+        # Log in direct apres creation de compte
+        session["username"] = username
+        session["isAdmin"] = is_admin
+        return redirect(url_for('index'))
+    
+    return render_template('cree.html')
 
 
 @app.route("/logout")
