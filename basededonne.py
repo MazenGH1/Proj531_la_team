@@ -437,10 +437,31 @@ def get_all_reponse_from_resultat(id_resultat: int) -> list[tuple[int,str, bool,
     except sqlite3.Error as error:
         print(f"Erreur dans BDD: {error}")
         return None
+    
+def get_question_and_correct(id_question: int) -> tuple[str, list[str]] | None:
+    """
+    return: (texte de la question, [textes des bonnes réponses]) ou None si introuvable
+    """
+    try:
+        with get_sql_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT question FROM Question WHERE id = ?", (id_question,))
+            row = cursor.fetchone()
+            if row is None:
+                return None
+            cursor.execute(
+                "SELECT reponse FROM Reponse WHERE id_question = ? AND correct = 1",
+                (id_question,)
+            )
+            return row[0], [r[0] for r in cursor.fetchall()]
+    except sqlite3.Error as error:
+        print(f"Erreur dans BDD: {error}")
+        return None
+    
 
 def get_all_result_from_user(username : str) -> list[tuple[int, str, int]] | None:
     """
-    :return: list[tuple[id_resultat, dateHeure, id_quiz]]
+    return: list[tuple[id_resultat, dateHeure, id_quiz]]
     """
     query = """
             SELECT id, dateHeure, id_quiz FROM Resultat

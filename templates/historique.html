@@ -28,24 +28,27 @@
         <h3>Réponses :</h3>
 
         <table border="1">
-            <tr>
-                <th>Question ID</th>
+             <tr>
+                <th>Question</th>
                 <th>Réponse donnée</th>
                 <th>Résultat</th>
+                <th>Bonne réponse</th>
             </tr>
 
             {% for rep in res.reponse %}
 
             <tr>
-                <td>{{ rep[3] }}</td>
+                <td>{{ rep.question }}</td>
 
-                <td>{{ rep[1] }}</td>
+                <td>{{ rep.donnee }}</td>
 
-                {% if rep[2] %}
+                {% if rep.correct %}
                     <td>✅ Correct</td>
                 {% else %}
                     <td>❌ Faux</td>
                 {% endif %}
+
+                <td>{{ rep.bonnes | join(' / ') }}</td>
 
             </tr>
 

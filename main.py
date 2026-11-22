@@ -39,6 +39,80 @@ if len(existing_quizzes) == 0:
         ],
         "Football"
     )
+    
+    db.create_quizz(
+        [
+            
+            ("Dérivée de sin(x) ?",
+             [("cos(x)", True), ("-cos(x)", False), ("-sin(x)", False), ("tan(x)", False)]),
+            ("Dérivée de ln(x) ?",
+             [("e^x", False), ("1/x", True), ("ln(x)/x", False), ("x", False)]),
+            ("Dérivée de tan(x) ?",
+             [("1/sin²(x)", False), ("-1/cos²(x)", False), ("1 + tan²(x)", True), ("cot(x)", False)]),
+            ("Dérivée de arctan(x) ?",
+             [("1/√(1 − x²)", False), ("1/(1 + x²)", True), ("−1/(1 + x²)", False), ("1/(1 − x²)", False)]),
+            ("Dérivée de x^x (x > 0) ?",
+             [("x · x^(x−1)", False), ("x^x · ln(x)", False), ("x^x", False), ("x^x (ln(x) + 1)", True)]),
+
+            
+            ("∫₀¹ x² dx = ?",
+             [("1/2", False), ("2/3", False), ("1/3", True), ("1", False)]),
+            ("∫₀^π sin(x) dx = ?",
+             [("0", False), ("1", False), ("π", False), ("2", True)]),
+            ("∫₀^∞ sin(x)/x dx = ?",
+             [("π", False), ("π/2", True), ("1", False), ("2", False)]),
+            ("∫₀^∞ e^(−x) dx = ?",
+             [("0", False), ("e", False), ("1", True), ("+∞", False)]),
+
+            
+            ("∫ de −∞ à +∞ de e^(−x²) dx = ?",
+             [("√π", True), ("π", False), ("2π", False), ("1", False)]),
+            ("∫ de −∞ à +∞ de e^(−x²/2) dx = ?",
+             [("√π", False), ("2π", False), ("√(2π)", True), ("1", False)]),
+            ("Densité de la loi normale N(0,1) ?",
+             [("e^(−x²) / √π", False), ("e^(−x²/2) / √(2π)", True), ("e^(−x²/2) / (2π)", False), ("e^(−x) / √(2π)", False)]),
+            ("Γ(1/2) = ?",
+             [("π", False), ("1", False), ("√(2π)", False), ("√π", True)]),
+
+            
+            ("Σ (n≥1) 1/n² = ?",
+             [("π/4", False), ("π²/6", True), ("π²/3", False), ("ln 2", False)]),
+            ("Σ (n≥0) 1/n! = ?",
+             [("π", False), ("2", False), ("e", True), ("1/e", False)]),
+            ("Σ (n≥0) x^n pour |x| < 1 ?",
+             [("1/(1 + x)", False), ("x/(1 − x)", False), ("1/(1 − x)", True), ("e^x", False)]),
+            ("Σ (n≥1) (−1)^(n+1)/n = ?",
+             [("π/4", False), ("1", False), ("ln 2", True), ("π²/12", False)]),
+            ("Σ (n≥0) (−1)^n/(2n+1) = ?",
+             [("π/2", False), ("ln 2", False), ("π²/6", False), ("π/4", True)]),
+            ("La série harmonique Σ 1/n ...",
+             [("converge vers 1", False), ("diverge", True), ("converge vers ln 2", False), ("converge vers π²/6", False)]),
+        ],
+        "Maths"
+    )
+    
+    db.create_quizz(
+        [
+            ("En quelle année a eu lieu la prise de la Bastille ?",
+             [("1776", False), ("1789", True), ("1799", False), ("1804", False)]),
+            ("Qui a été couronné empereur à Rome en l'an 800 ?",
+             [("Clovis", False), ("Charles Martel", False), ("Charlemagne", True), ("Hugues Capet", False)]),
+            ("Dans quelle ville Jeanne d'Arc a-t-elle été brûlée en 1431 ?",
+             [("Orléans", False), ("Reims", False), ("Paris", False), ("Rouen", True)]),
+            ("Quel roi a fait construire la cour et le château de Versailles comme résidence royale ?",
+             [("Louis XIV", True), ("Louis XVI", False), ("François Ier", False), ("Henri IV", False)]),
+            ("En quelle année Napoléon Bonaparte devient-il empereur des Français ?",
+             [("1799", False), ("1815", False), ("1804", True), ("1792", False)]),
+            ("Quelle bataille de 1815 marque la défaite définitive de Napoléon ?",
+             [("Austerlitz", False), ("Waterloo", True), ("Iéna", False), ("Trafalgar", False)]),
+            ("En quelle année l'esclavage est-il définitivement aboli en France (décret Schœlcher) ?",
+             [("1794", False), ("1815", False), ("1870", False), ("1848", True)]),
+            ("En quelle année est fondée la Ve République, avec le général de Gaulle ?",
+             [("1946", False), ("1958", True), ("1968", False), ("1945", False)]),
+        ],
+        "Histoire de France"
+    )
+        
         
         
 
@@ -270,11 +344,23 @@ def hist(username: str):
     
     username_db = session["username"] 
     
-    res = db.get_all_result_from_user(username_db)
+    res = db.get_all_result_from_user(username_db) or []
     history=[]
     for id_res, date, id_quiz in res:
-        reponses = db.get_all_reponse_from_resultat(id_res)
-        history.append({'id': id_res, 'date': date, 'quiz': id_quiz, 'reponse': reponses})
+        reponses = db.get_all_reponse_from_resultat(id_res) or []
+        lignes = []
+        for id_rep, texte_rep, correct, id_question in reponses:
+            infos = db.get_question_and_correct(id_question)
+            question_text, bonnes = infos if infos else (f"Question {id_question}", [])
+            lignes.append({
+                'question': question_text,
+                'donnee': texte_rep,
+                'correct': bool(correct),
+                'bonnes': bonnes,
+            })
+        history.append({'id': id_res, 'date': date, 'quiz': id_quiz, 'reponse': lignes})
+        
+        
     return render_template("historique.html", history=history)
 
 
