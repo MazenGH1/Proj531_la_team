@@ -225,26 +225,27 @@ tbody tr:hover {
 
 .back-link {
     display: block;
-
     width: fit-content;
     margin: 30px auto 0;
 
-    padding: 14px 25px;
+    padding: 11px 19px;
 
-    background: #48e5c2;
     color: #00153a;
+    background: #48e5c2;
+    border: 1px solid #48e5c2;
+    border-radius: 12px;
 
     text-decoration: none;
     font-weight: bold;
+    font-size: 14px;
 
-    border-radius: 10px;
-
-    transition: 0.2s;
+    transition: all 0.25s ease;
 }
 
 .back-link:hover {
     background: #70f5d8;
     transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(72,229,194,0.3);
 }
 
 /* ========================================

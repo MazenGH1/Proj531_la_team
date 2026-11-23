@@ -1,67 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historique</title>
     <link rel="stylesheet" href="../static/styles/historique.css">
 </head>
 
 <body>
+    <main class="container">
+        <h1>Mon historique de quiz</h1>
 
-<h1>Mon historique de quiz</h1>
+        {% if history|length == 0 %}
 
-<a href="{{ url_for('index') }}" class="main_menu">Retour au menu principal</a>
+            <section class="empty-card">
+                <p>Aucun quiz terminé pour le moment.</p>
+            </section>
 
-{% if history|length == 0 %}
+        {% else %}
 
-    <p>Aucun quiz terminé pour le moment.</p>
+            {% for res in history %}
+                <section class="history-card">
+                    <header class="history-header">
+                        <h2>Quiz {{ res.id }}</h2>
+                        <p class="quiz-date">Date : {{ res.date }}</p>
+                    </header>
 
-{% else %}
+                    <h3>Réponses :</h3>
 
-    {% for res in history %}
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Réponse donnée</th>
+                                    <th>Résultat</th>
+                                    <th>Bonne réponse</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rep in res.reponse %}
+                                    <tr>
+                                        <td>{{ rep.question }}</td>
+                                        <td>{{ rep.donnee }}</td>
 
-        <h2>Quiz {{ res.id }}</h2>
+                                        {% if rep.correct %}
+                                            <td><span class="result correct">✅ Correct</span></td>
+                                        {% else %}
+                                            <td><span class="result incorrect">❌ Faux</span></td>
+                                        {% endif %}
 
-        <p>
-            Date : {{ res.date }}
-        </p>
-
-        <h3>Réponses :</h3>
-
-        <table border="1">
-             <tr>
-                <th>Question</th>
-                <th>Réponse donnée</th>
-                <th>Résultat</th>
-                <th>Bonne réponse</th>
-            </tr>
-
-            {% for rep in res.reponse %}
-
-            <tr>
-                <td>{{ rep.question }}</td>
-
-                <td>{{ rep.donnee }}</td>
-
-                {% if rep.correct %}
-                    <td>✅ Correct</td>
-                {% else %}
-                    <td>❌ Faux</td>
-                {% endif %}
-
-                <td>{{ rep.bonnes | join(' / ') }}</td>
-
-            </tr>
-
+                                        <td>{{ rep.bonnes | join(' / ') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             {% endfor %}
 
-        </table>
+        {% endif %}
 
-        <hr>
-
-    {% endfor %}
-
-{% endif %}
-
-
+        <a href="{{ url_for('index') }}" class="back-link">Retour au menu principal</a>
+    </main>
 </body>
 </html>
